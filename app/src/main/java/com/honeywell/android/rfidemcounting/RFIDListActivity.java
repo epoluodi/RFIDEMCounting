@@ -1,6 +1,7 @@
 package com.honeywell.android.rfidemcounting;
 
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,16 @@ public class RFIDListActivity extends BaseActivity {
     RecyclerView recyclerView;
     private List<RFIDList> mList = new ArrayList<>();
     private RFIDlistAdapter rfiDlistAdapter;
+
+
+    @BindView(R.id.tv_all)
+    TextView tv_all;
+
+    @BindView(R.id.tv_count)
+    TextView tv_count;
+
+    @BindView(R.id.tv_unknown)
+    TextView tv_unknown;
     @Override
     protected int attachLayoutRes() {
         return R.layout.comment_list;
@@ -77,5 +88,9 @@ public class RFIDListActivity extends BaseActivity {
 
         tv_right_title.setVisibility(View.VISIBLE);
         tv_right_title.setText("导出");
+
+        tv_all.setText("共3条");
+        tv_count.setText("已盘2条");
+        tv_unknown.setText("1条未知");
     }
 }

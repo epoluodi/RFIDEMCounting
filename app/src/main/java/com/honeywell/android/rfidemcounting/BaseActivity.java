@@ -191,6 +191,5 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (getCurrentFocus() != null)
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-
     }
 }

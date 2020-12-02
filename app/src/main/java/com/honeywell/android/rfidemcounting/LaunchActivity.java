@@ -18,7 +18,7 @@ public class LaunchActivity extends BaseActivity{
 
             new Handler().postDelayed(new Runnable() {
                 public void run() {
-                    startActivity(MainActivity.class);
+                    startActivity(EmMainActivity.class);
                     finish();
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 }

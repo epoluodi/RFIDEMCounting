@@ -19,7 +19,7 @@
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
 
-            android:name=".MainActivity">
+            android:name=".EmMainActivity">
         </activity>
 
         <activity
@@ -31,6 +31,12 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
 
             android:name=".RFIDListActivity">
+        </activity>
+
+        <activity
+            android:configChanges="keyboardHidden|orientation|screenSize"
+
+            android:name=".MainActivity">
         </activity>
     </application>
 
