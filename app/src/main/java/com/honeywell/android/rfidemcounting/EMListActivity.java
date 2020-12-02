@@ -2,6 +2,7 @@ package com.honeywell.android.rfidemcounting;
 
 import android.content.Intent;
 import android.view.View;
+import android.widget.Toast;
 
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.honeywell.android.rfidemcounting.adapter.EMlistAdapter;
 import com.honeywell.android.rfidemcounting.bean.EmList;
 import com.honeywell.android.rfidemcounting.utils.CommonUtil;
+import com.honeywell.android.rfidemcounting.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +40,24 @@ public class EMListActivity extends BaseActivity {
             }
         });
 
-    }
 
+        tv_right_title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast toast=Toast.makeText(getApplicationContext(),"导入任务列表",Toast.LENGTH_SHORT);
+                toast.show();
+                //
+                int missionCount=importMissionList();
+            }
+        });
+    }
+    /*方法：导入任务列表
+    参数：无
+    返回值：导入任务条数
+    */
+    private int importMissionList(){
+            return 0;
+    }
     @Override
     public void initData() {
         super.initData();

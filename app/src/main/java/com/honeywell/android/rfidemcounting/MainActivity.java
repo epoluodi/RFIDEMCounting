@@ -44,7 +44,7 @@ public class MainActivity extends BaseActivity {
         functionType.img=R.mipmap.l2;
         FunctionType functionType1=new FunctionType();
         functionType1.des="设置";
-        functionType1.img=R.mipmap.l3;
+        functionType1.img=R.mipmap.repair;
         mList.add(functionType);
         mList.add(functionType1);
         mAdapter = new FunTypeAdapter(R.layout.item_iv_tv1,mList);
@@ -76,8 +76,10 @@ public class MainActivity extends BaseActivity {
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
                         break;
                     case 1:
-                        /*startActivity(MonthCheckList.class);
-                        CommonUtil.openNewActivityAnim(getActivity(),false);*/
+
+                        Intent intent1 = new Intent(MainActivity.this, SettingActivity.class);
+                        startActivity(intent1);
+                        CommonUtil.openNewActivityAnim(MainActivity.this, false);
                 }
             }
         });

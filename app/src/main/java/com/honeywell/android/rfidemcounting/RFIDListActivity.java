@@ -2,6 +2,7 @@ package com.honeywell.android.rfidemcounting;
 
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,9 +41,23 @@ public class RFIDListActivity extends BaseActivity {
 
     @Override
     public void setListener() {
+        tv_right_title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast toast=Toast.makeText(getApplicationContext(),"导出任务",Toast.LENGTH_SHORT);
+                toast.show();
 
+                int missionCount=exportMissionList();
+            }
+        });
     }
-
+    /*方法：导出任务
+      参数：无
+      返回值：导出任务RFID条数
+      */
+    private   int exportMissionList(){
+        return 0;
+    }
     @Override
     public void initData() {
         super.initData();
