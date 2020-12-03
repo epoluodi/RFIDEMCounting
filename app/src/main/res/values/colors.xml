@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="background">#FFFFFF</color>
+
+
+    <color name="color1">#F0F0F0</color>
+    <color name="color2">#FFFFFF</color>
+    <color name="color3">#B0B0B0</color>
+    <color name="color4">#666666</color>
+    <color name="color5">#57C5E8</color>
+    <color name="colorPrimary">#ff0012</color>
+    <color name="colorPrimaryDark">#cc000e</color>
+    <color name="colorAccent">#ff0012</color>
+    <color name="lightYellow">#FFFFF0</color>
+    <color name="lightCyan">#E1FFFF</color>
+    <color name="bf">#bfbfbf</color>
+    <color name="white">#ffffff</color>
+    <color name="transparent">#00000000</color>
+    <color name="blue">#4e9cfd</color>
+    <color name="or">#f0a047</color>
+    <color name="text1">#ff0012</color>
+    <color name="text2">#333333</color>
+    <color name="black_light">#333333</color>
+    <color name="black6">#666666</color>
+    <string name="cancle">取消</string>
+    <string name="title">请选择时间</string>
+    <string name="commit">确定</string>
+    <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="day">日</string>
+    <string name="hour">时</string>
+    <string name="minute">分</string>
+    <color name="split_line">#11112233</color>
+    <color name="gray">#E0E0E0</color>
+    <color name="yellow">#FFEA00</color>
+    <color name="bg_color">#f5f5f5</color>
+    <color name="gray_border">#CCCCCC</color>
+    <color name="black_trans_deep">#AA000000</color>
+
 </resources>

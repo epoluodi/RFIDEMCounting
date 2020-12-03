@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/app_title_rela"
+    android:layout_width="match_parent"
+    android:layout_height="49dp"
+    android:background="@color/colorPrimary">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="40dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:scaleType="center"
+        android:src="@mipmap/up_white"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_back2"
+        android:visibility="gone"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/iv_back"
+        android:scaleType="center"
+        android:src="@mipmap/up_white" />
+
+    <TextView
+        android:id="@+id/tv_left_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="sdddd"
+        android:textColor="@color/white"
+        android:textSize="20.5sp"
+        android:visibility="gone" />
+
+
+    <com.honeywell.android.rfidemcounting.widget.AlwaysMarqueeTextView
+        android:id="@+id/tv_center_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="ddd"
+        android:textColor="@color/white"
+        android:textSize="@dimen/d_title"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_center_title"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:gravity="center"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone" />
+
+    <ImageView
+        android:scaleType="center"
+        android:id="@+id/iv_end_title"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="60dp"
+        android:layout_alignParentRight="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:textColor="@color/white"
+        android:id="@+id/tv_end_title"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="dd"
+        android:textSize="15dp"
+        android:visibility="gone" />
+
+    <ImageView
+
+        android:id="@+id/iv_right_title"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@+id/iv_end_title"
+        android:scaleType="center"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_alignParentRight="true"
+        android:id="@+id/tv_right_title"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@+id/tv_end_title"
+        android:gravity="center"
+        android:text="sdd"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:visibility="gone" />
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0.5dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:background="#e0e0e0" />-->
+</RelativeLayout>

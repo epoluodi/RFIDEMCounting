@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rfid_top"
+    android:layout_width="match_parent"
+    android:layout_height="49dp"
+   >
+
+
+    <TextView
+        android:id="@+id/tv_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="sdddd"
+        android:textColor="@color/black_light"
+        android:textSize="15dp"
+        />
+    <TextView
+        android:id="@+id/tv_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="130dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="sdddd"
+        android:textColor="@color/black_light"
+        android:textSize="15dp"
+        />
+
+
+    <TextView
+        android:layout_alignParentRight="true"
+        android:id="@+id/tv_unknown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text="sddddd"
+        android:textColor="@color/black_light"
+        android:textSize="15dp"
+         />
+
+</RelativeLayout>
