@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<ListPreference
+    android:key="read_power_ante"
+    android:title="天线读功率"
+    android:entries="@array/power_list"
+    android:entryValues="@array/power_list"
+    />
+<ListPreference
+    android:key="write_power_ante"
+    android:title="天线写功率"
+    android:entries="@array/power_list"
+    android:entryValues="@array/power_list"
+    />
+</PreferenceScreen>
