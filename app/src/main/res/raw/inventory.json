@@ -52,7 +52,7 @@
             "inventoryList":[
                 {
                     "itemID":2001,
-                    "inventoryTaskId":1,
+                    "inventoryTaskId":2,
                     "epcID":"1",
                     "isCounted":true,
                     "inventoryTime":2002,
@@ -61,7 +61,7 @@
                 },
                 {
                     "itemID":2002,
-                    "inventoryTaskId":1,
+                    "inventoryTaskId":2,
                     "epcID":"2",
                     "isCounted":false,
                     "inventoryTime":2002,
@@ -70,7 +70,7 @@
                 },
                 {
                     "itemID":2003,
-                    "inventoryTaskId":1,
+                    "inventoryTaskId":2,
                     "epcID":"3",
                     "isCounted":false,
                     "inventoryTime":2002,
@@ -79,7 +79,7 @@
                 },
                 {
                     "itemID":2004,
-                    "inventoryTaskId":1,
+                    "inventoryTaskId":2,
                     "epcID":"4",
                     "isCounted":true,
                     "inventoryTime":2002,

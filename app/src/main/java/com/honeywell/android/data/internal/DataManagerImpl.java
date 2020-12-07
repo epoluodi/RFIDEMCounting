@@ -22,7 +22,7 @@ public class DataManagerImpl extends DataManager {
     private static final String TAG = "DataManagerImpl";
     private static final String DatabaseName = "inventory.db";
     private DaoSession mDaoSession;
-    private DaoMaster mDaoMaster ;
+    private DaoMaster mDaoMaster;
 
     public DataManagerImpl(Context context, ExecutorService executor) {
         super(context,executor);
@@ -31,11 +31,8 @@ public class DataManagerImpl extends DataManager {
     @Override
     public void startUp() {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(mContext,DatabaseName);
-        //获取可写数据库
         SQLiteDatabase sqLiteDatabase = helper.getWritableDatabase();
-        //获取数据库对象
         mDaoMaster = new DaoMaster(sqLiteDatabase);
-        //获取Dao对象管理者
         mDaoSession = mDaoMaster.newSession();
     }
 
