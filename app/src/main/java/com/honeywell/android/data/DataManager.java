@@ -27,7 +27,7 @@ public abstract class DataManager {
 
     /**
      * Insert or update the user.
-     * @param users
+     * @param user
      */
     public abstract void insertOrUpdateUser(User user);
 

@@ -47,7 +47,6 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="任务名称"
-
                 android:textColor="#515151"
                 android:textSize="13dp" />
 

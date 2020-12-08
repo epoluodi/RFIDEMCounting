@@ -18,29 +18,26 @@
 
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:name=".EmMainActivity">
         </activity>
 
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:name=".EMListActivity">
         </activity>
+
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:name=".RFIDListActivity">
         </activity>
 
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:name=".MainActivity">
         </activity>
+
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:name=".SettingActivity">
         </activity>
     </application>

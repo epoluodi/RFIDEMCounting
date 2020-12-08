@@ -13,6 +13,7 @@ import com.honeywell.android.rfidemcounting.adapter.EMlistAdapter;
 import com.honeywell.android.rfidemcounting.adapter.RFIDlistAdapter;
 import com.honeywell.android.rfidemcounting.bean.EmList;
 import com.honeywell.android.rfidemcounting.bean.RFIDList;
+import com.honeywell.android.rfidemcounting.utils.CommonUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,13 @@ public class RFIDListActivity extends BaseActivity {
                 toast.show();
 
                 int missionCount=exportMissionList();
+            }
+        });
+
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommonUtil.exitActivityAndBackAnim(RFIDListActivity.this, false);
             }
         });
     }
