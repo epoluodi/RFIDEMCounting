@@ -1,5 +1,6 @@
 package com.honeywell.android.rfidemcounting;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,9 @@ import butterknife.BindView;
 
 
 public class SettingActivity extends BaseActivity{
+
+    @BindView(R.id.btBtn)
+    public Button btBtn;
 
     @Override
     protected int attachLayoutRes() {
@@ -42,6 +46,14 @@ public class SettingActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
                 CommonUtil.exitActivityAndBackAnim(SettingActivity.this, true);
+            }
+        });
+
+        btBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingActivity.this, BtActivity.class);
+                startActivity(intent);
             }
         });
     }

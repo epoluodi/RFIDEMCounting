@@ -8,12 +8,22 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/lightYellow">
+        android:background="@color/gray">
 
         <FrameLayout
             android:id="@+id/ante_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="蓝牙设备连接"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="100dp"
+            android:background="@color/blue"
+            android:textSize="15sp"/>
 
     </RelativeLayout>
 
