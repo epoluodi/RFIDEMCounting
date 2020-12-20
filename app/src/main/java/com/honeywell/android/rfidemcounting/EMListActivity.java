@@ -1,14 +1,21 @@
 package com.honeywell.android.rfidemcounting;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,61 +29,144 @@ import com.honeywell.android.data.utils.Transform;
 import com.honeywell.android.rfidemcounting.adapter.EMlistAdapter;
 import com.honeywell.android.rfidemcounting.bean.EmList;
 import com.honeywell.android.rfidemcounting.utils.CommonUtil;
-import com.honeywell.android.rfidemcounting.utils.ToastUtils;
+import com.honeywell.android.rfidemcounting.utils.DialogUtil;
+import com.honeywell.rfidservice.EventListener;
+import com.honeywell.rfidservice.RfidManager;
+import com.honeywell.rfidservice.TriggerMode;
+import com.honeywell.rfidservice.rfid.RfidReader;
+import com.honeywell.rfidservice.rfid.TagAdditionData;
+import com.honeywell.rfidservice.rfid.TagReadOption;
+import com.leon.lfilepickerlibrary.LFilePicker;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
-public class EMListActivity extends BaseActivity implements DataEngine.DataEngineCallback{
+public class EMListActivity extends BaseActivity {
     private static final String TAG = "EMListActivity";
-    private DataEngine mDataEngine;
-    private DataManager mDataManager;
+    private static int REQUESTCODE_FROM_ACTIVITY = 1000;
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
+    Dialog loadingDialog;
+
+    private Realm realm;
     User hyh;
-    private List<InventoryTask> mList = new ArrayList<>();
+    private List<EmList> mList ;
     private EMlistAdapter eMlistAdapter;
     @Override
     protected int attachLayoutRes() {
         return R.layout.comment_list;
     }
+    private static class MyHandler extends Handler {
+        private WeakReference ref;
 
+        private MyHandler(EMListActivity act) {
+            ref = new WeakReference<>(act);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            if (ref.get() != null) {
+                ((EMListActivity) ref.get()).handleMessage(msg);
+            }
+        }
+    }
+    public void handleMessage(Message msg) {
+        switch (msg.what) {
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDataEngine = DataEngine.getInstance(this);
-        mDataEngine.startUp(this);
+
     }
 
-    @Override
+
+
+        @Override
     public void setListener() {
         eMlistAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(EMListActivity.this, RFIDListActivity.class);
-                startActivity(intent);
-                CommonUtil.openNewActivityAnim(EMListActivity.this, false);
+
+                    Intent intent = new Intent(EMListActivity.this, RFIDListActivity.class);
+                    intent.putExtra("task",  mList.get(position).getId());
+                    startActivity(intent);
+                    CommonUtil.openNewActivityAnim(EMListActivity.this, false);
+
             }
         });
 
+        eMlistAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
 
+            @Override
+            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+                final androidx.appcompat.app.AlertDialog.Builder normalDialog = new AlertDialog.Builder(EMListActivity.this);
+                normalDialog.setCancelable(false);
+                normalDialog.setTitle("删除");
+                normalDialog.setMessage("确认删除任务吗？");
+                normalDialog.setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                    realm.beginTransaction();
+                                    mList.get(position).deleteFromRealm();
+                                    realm.commitTransaction();
+                                    eMlistAdapter.notifyDataSetChanged();
+
+                            }
+                        });
+                normalDialog.setNegativeButton("取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+
+                normalDialog.show();
+
+                return false;
+            }
+
+        });
         tv_right_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                importMissionList();
+                String filePath = getApplication().getExternalCacheDir().getPath()+"/import";
+
+                new LFilePicker()
+                        .withActivity(EMListActivity.this)
+                        .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
+                        .withStartPath(filePath)
+                        .withFileFilter( new String[]{".txt"})
+                        .start();
             }
         });
 
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommonUtil.exitActivityAndBackAnim(EMListActivity.this, true);
+                Intent intent = new Intent(EMListActivity.this, MainActivity.class);
+                startActivity(intent);
+                CommonUtil.openNewActivityAnim(EMListActivity.this, true);
             }
         });
     }
@@ -84,28 +174,37 @@ public class EMListActivity extends BaseActivity implements DataEngine.DataEngin
     参数：无
     返回值：导入任务条数
     */
+    int i=1;
     private void importMissionList(){
         InputStream txt = getResources().openRawResource(R.raw.inventorytxt);
-        final TaskList taskList = Transform.importTxt("HYH","Inventory2",txt);
+
+        final EmList emList = Transform.importTxtToRealm("HYH","Inventory"+String.valueOf(i++),txt);
         try {
             txt.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mDataManager.insertOrUpdateInventoryTask(taskList.getTasks());
-        Log.d(TAG, "onCreate: -----"+taskList.toString());
-        eMlistAdapter.addData(taskList.getTasks());
+        realm.beginTransaction();
+        realm.insert(emList);
+        realm.commitTransaction();
+
+        eMlistAdapter.notifyDataSetChanged();
     }
     @Override
     public void initData() {
         super.initData();
+        Realm.init(getApplicationContext());
+        realm=Realm.getDefaultInstance();
+        realm.refresh();
+
+        mList=realm.where(EmList.class).findAll().sort("time",Sort.ASCENDING);
+        eMlistAdapter.setNewData(mList);
     }
 
 
     @Override
     public void initView() {
         super.initView();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -129,46 +228,69 @@ public class EMListActivity extends BaseActivity implements DataEngine.DataEngin
 
 
     @Override
-    public void onStartUp() {
-        mDataManager = mDataEngine.getDataManager();
-        mDataManager.clearDatabase();
-        hyh=new User();
-        hyh.setUserName("HYH");
-        hyh.setPassword("123456");
-        mDataManager.insertOrUpdateUser(hyh);
-
-        InputStream txt = getResources().openRawResource(R.raw.inventorytxt);
-        final TaskList taskList = Transform.importTxt("HYH","Inventory",txt);
-        try {
-            txt.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "onCreate: -----"+taskList.toString());
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(EMListActivity.this, MainActivity.class);
+        startActivity(intent);
+        CommonUtil.openNewActivityAnim(EMListActivity.this, true);
+    }
 
 
-        final TaskList taskList1 = Transform.importTxt("HYH","Inventory1",txt);
-        try {
-            txt.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "onCreate: -----"+taskList.toString());
-        mDataManager.insertOrUpdateInventoryTask(taskList.getTasks());
-        mDataManager.insertOrUpdateInventoryTask(taskList1.getTasks());
-        mDataManager.getInventoryTask(hyh, new DataManager.OnDataListener() {
-            @Override
-            public void onGetInventoryTask(List<InventoryTask> tasks) {
-                Log.d(TAG, "onCreate: "+tasks.toString());
 
-                eMlistAdapter.addData(tasks);
+    private class importFile extends AsyncTask<String,Void,EmList>{
+        @Override
+        protected EmList doInBackground(String... path) {
+            String dirpath=path[0];
+            String filename=dirpath.substring(dirpath.lastIndexOf("/")+1,dirpath.lastIndexOf("."));
+            File file=new File(dirpath);
+            try {
+                InputStream txt=new FileInputStream(file);
+                final EmList   emList = Transform.importTxtToRealm("HYH",filename,txt);
+                return emList;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
             }
-        });
+        }
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            loadingDialog=   new ProgressDialog(EMListActivity.this);
+            loadingDialog.setTitle("正在导入任务");
+            loadingDialog.setCancelable(false);
+            loadingDialog.show();
+
+        }
+
+        @Override
+        protected void onPostExecute(EmList emList) {
+            super.onPostExecute(emList);
+
+            realm.beginTransaction();
+            realm.insert(emList);
+            realm.commitTransaction();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            eMlistAdapter.notifyDataSetChanged();
+            loadingDialog.dismiss();
+        }
     }
-
     @Override
-    public void onShutDown() {
-
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUESTCODE_FROM_ACTIVITY) {
+                List<String> list = data.getStringArrayListExtra("paths");
+                String path =list.get(0);
+                new importFile().execute(path);
+            }
+        }
     }
+
+
 }

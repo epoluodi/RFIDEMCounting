@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 android {
-    compileSdkVersion 29
+    compileSdkVersion 28
     buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.honeywell.android.rfidemcounting"
         minSdkVersion 25
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
@@ -39,13 +40,14 @@ dependencies {
     implementation 'com.jakewharton:butterknife:10.2.3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
-    implementation 'com.android.support:appcompat-v7:29.0.0'
-    implementation 'com.android.support:recyclerview-v7:29.0.0'
-    implementation 'com.android.support:cardview-v7:29.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'org.greenrobot:greendao:3.3.0'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation(name: 'honeywell_rfid_sdk', ext: 'aar')
+    implementation 'com.leon:lfilepickerlibrary:1.8.0'
+    implementation(name: 'honeywell_rfid_sdk-release', ext: 'aar')
 
 }

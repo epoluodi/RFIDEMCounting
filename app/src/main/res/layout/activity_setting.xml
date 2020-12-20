@@ -19,11 +19,22 @@
             android:id="@+id/btBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="蓝牙设备连接"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="100dp"
+            android:layout_marginBottom="113dp"
             android:background="@color/blue"
-            android:textSize="15sp"/>
+            android:text="蓝设备连接"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/comBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="199dp"
+            android:background="@color/blue"
+            android:text="COM设备连接"
+            android:textSize="15sp" />
 
     </RelativeLayout>
 

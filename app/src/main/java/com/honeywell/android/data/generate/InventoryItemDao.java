@@ -78,7 +78,7 @@ public class InventoryItemDao extends AbstractDao<InventoryItem, Long> {
         stmt.bindLong(4, entity.getIsCounted() ? 1L: 0L);
         stmt.bindLong(5, entity.getInventoryTime());
         stmt.bindString(6, entity.getUserName());
-        stmt.bindLong(7, entity.getFailedReason());
+        stmt.bindString(7, entity.getFailedReason());
     }
 
     @Override
@@ -94,7 +94,7 @@ public class InventoryItemDao extends AbstractDao<InventoryItem, Long> {
         stmt.bindLong(4, entity.getIsCounted() ? 1L: 0L);
         stmt.bindLong(5, entity.getInventoryTime());
         stmt.bindString(6, entity.getUserName());
-        stmt.bindLong(7, entity.getFailedReason());
+        stmt.bindString(7, entity.getFailedReason());
     }
 
     @Override
@@ -111,7 +111,7 @@ public class InventoryItemDao extends AbstractDao<InventoryItem, Long> {
             cursor.getShort(offset + 3) != 0, // isCounted
             cursor.getLong(offset + 4), // inventoryTime
             cursor.getString(offset + 5), // userName
-            cursor.getInt(offset + 6) // failedReason
+            cursor.getString(offset + 6) // failedReason
         );
         return entity;
     }
@@ -124,7 +124,7 @@ public class InventoryItemDao extends AbstractDao<InventoryItem, Long> {
         entity.setIsCounted(cursor.getShort(offset + 3) != 0);
         entity.setInventoryTime(cursor.getLong(offset + 4));
         entity.setUserName(cursor.getString(offset + 5));
-        entity.setFailedReason(cursor.getInt(offset + 6));
+        entity.setFailedReason(cursor.getString(offset + 6));
      }
     
     @Override

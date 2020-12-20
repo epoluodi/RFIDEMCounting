@@ -2,6 +2,8 @@ package com.honeywell.android.rfidemcounting;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -19,7 +21,7 @@ import butterknife.BindView;
  */
 
 public class MainActivity extends BaseActivity {
-
+    private long mExitTime = 0;
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
     private FunTypeAdapter mAdapter;
@@ -59,6 +61,17 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+
+        if (System.currentTimeMillis() - mExitTime > 2000) {
+            Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis();
+        } else {
+            finish();
+        }
+    }
+
+    @Override
     public void initTitle() {
         tv_center_title.setVisibility(View.VISIBLE);
         tv_center_title.setText("首页");
@@ -76,7 +89,6 @@ public class MainActivity extends BaseActivity {
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
                         break;
                     case 1:
-
                         Intent intent1 = new Intent(MainActivity.this, SettingActivity.class);
                         startActivity(intent1);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);

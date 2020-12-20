@@ -5,6 +5,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 
+import java.io.Serializable;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
@@ -16,7 +17,7 @@ import com.honeywell.android.data.generate.InventoryTaskDao;
 
 
 @Entity
-public class InventoryTask {
+public class InventoryTask implements Serializable {
     @Id(autoincrement = true)
     private Long taskId;
     @NotNull

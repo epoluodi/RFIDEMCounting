@@ -1,10 +1,30 @@
 package com.honeywell.android.rfidemcounting.bean;
 
-public class RFIDList {
+import java.util.UUID;
+
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class RFIDList extends RealmObject {
+    @PrimaryKey
     private String id;
     private String epcid;
     private String name;
     private String state;
+    private EmList emlist;
+
+    public RFIDList() {
+        this.id = UUID.randomUUID().toString();;
+    }
+
+
+    public EmList getEmlist() {
+        return emlist;
+    }
+
+    public void setEmlist(EmList emlist) {
+        this.emlist = emlist;
+    }
 
     public String getId() {
         return id;

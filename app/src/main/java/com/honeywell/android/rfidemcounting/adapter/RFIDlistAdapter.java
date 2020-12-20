@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.honeywell.android.data.model.InventoryItem;
 import com.honeywell.android.rfidemcounting.R;
 import com.honeywell.android.rfidemcounting.bean.EmList;
 import com.honeywell.android.rfidemcounting.bean.RFIDList;
@@ -20,11 +21,13 @@ public class RFIDlistAdapter extends BaseQuickAdapter<RFIDList, BaseViewHolder> 
 
     @Override
     protected void convert(BaseViewHolder helper, RFIDList item) {
-        helper.setText(R.id.index, item.getId())
+        int i=helper.getLayoutPosition();
+        helper.setText(R.id.index, String.valueOf(i+1))
                 .setText(R.id.epcid,item.getEpcid())
-                .setText(R.id.name, item.getName())
+              /*  .setText(R.id.name, item.getIsCounted())*/
                 .setText(R.id.state, item.getState());
     }
+
 
 
 }

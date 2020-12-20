@@ -84,7 +84,7 @@ public class MainTestActivity extends AppCompatActivity implements DataEngine.Da
         //Import data
 //        mDataManager.insertOrUpdateInventoryTask(taskList.getTasks());
         User myUser = new User();
-        myUser.setUserName("Jack");
+        myUser.setUserName("JackCai");
         //Query data.
         mDataManager.getInventoryTask(myUser, new DataManager.OnDataListener() {
             @Override

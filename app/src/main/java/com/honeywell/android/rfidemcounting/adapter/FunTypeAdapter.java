@@ -22,7 +22,6 @@ public class FunTypeAdapter extends BaseQuickAdapter<FunctionType, BaseViewHolde
     protected void convert(BaseViewHolder helper, FunctionType item) {
         helper.setImageResource(R.id.iv, item.img)
                 .setText(R.id.tv, item.des);
-
     }
 
 

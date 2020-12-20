@@ -3,6 +3,7 @@ package com.honeywell.android.data.model;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 
+import java.io.Serializable;
 import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.NotNull;
@@ -13,7 +14,7 @@ import com.honeywell.android.data.generate.InventoryTaskDao;
 import com.honeywell.android.data.generate.InventoryItemDao;
 
 @Entity
-public class InventoryItem {
+public class InventoryItem implements Serializable {
     @Id(autoincrement = true) 
     private Long itemID;
     @NotNull
@@ -26,11 +27,11 @@ public class InventoryItem {
     private long inventoryTime;
     @NotNull
     private String userName;
-    private int failedReason;
+    private String failedReason;
     @Generated(hash = 1074823162)
     public InventoryItem(Long itemID, long inventoryTaskId, @NotNull String epcID,
             boolean isCounted, long inventoryTime, @NotNull String userName,
-            int failedReason) {
+                         String failedReason) {
         this.itemID = itemID;
         this.inventoryTaskId = inventoryTaskId;
         this.epcID = epcID;
@@ -92,11 +93,11 @@ public class InventoryItem {
         this.userName = userName;
     }
 
-    public int getFailedReason() {
+    public String getFailedReason() {
         return this.failedReason;
     }
 
-    public void setFailedReason(int failedReason) {
+    public void setFailedReason(String failedReason) {
         this.failedReason = failedReason;
     }
 
