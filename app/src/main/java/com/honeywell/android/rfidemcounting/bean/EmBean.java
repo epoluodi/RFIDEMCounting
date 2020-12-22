@@ -16,10 +16,19 @@ public class EmBean extends RealmObject {
     private String username;
     private RealmList<RFIDList> rfidList;
     private String time;
+    private boolean selected=false;
     public EmBean() {
 
             this.id = UUID.randomUUID().toString();;
 
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public RealmList<RFIDList> getRfidList() {

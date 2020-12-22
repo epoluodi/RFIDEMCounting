@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.honeywell.android.data.model.User;
 import com.honeywell.android.data.utils.Transform;
 import com.honeywell.android.rfidemcounting.adapter.EMlistAdapter;
+import com.honeywell.android.rfidemcounting.adapter.ExportEmAdapter;
 import com.honeywell.android.rfidemcounting.bean.EmBean;
 import com.honeywell.android.rfidemcounting.utils.CommonUtil;
 import com.leon.lfilepickerlibrary.LFilePicker;
@@ -26,6 +28,7 @@ import com.leon.lfilepickerlibrary.LFilePicker;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -42,9 +45,10 @@ public class ExportEmActivity extends BaseActivity {
     Dialog loadingDialog;
     private Realm realm;
     private String user_name;
+    private String filePath;
     User hyh;
     private List<EmBean> mList ;
-    private EMlistAdapter eMlistAdapter;
+    private ExportEmAdapter eMlistAdapter;
     @Override
     protected int attachLayoutRes() {
         return R.layout.comment_list_rfid;
@@ -127,15 +131,12 @@ public class ExportEmActivity extends BaseActivity {
         tv_right_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String filePath = getApplication().getExternalCacheDir().getPath()+"/import";
-
-                new LFilePicker()
-                        .withActivity(ExportEmActivity.this)
-                        .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
-                        .withStartPath(filePath)
-                        .withFileFilter( new String[]{".txt"})
-                        .start();
+                try {
+                    boolean isexport=Transform.exportTxtfrom(filePath,mList.get(0).getName(),mList.get(0));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.v(TAG,String.valueOf(mList.get(0).isSelected()));
             }
         });
 
@@ -153,12 +154,12 @@ public class ExportEmActivity extends BaseActivity {
         super.initData();
         Realm.init(getApplicationContext());
         realm=Realm.getDefaultInstance();
-        realm.refresh();
         hyh=new User();
         user_name=MyApplication.user.getUserName();
         hyh.setUserName(user_name);
         mList=realm.where(EmBean.class).equalTo("username",user_name).equalTo("state","已完成").findAll().sort("time",Sort.ASCENDING);
         eMlistAdapter.setNewData(mList);
+        filePath = getApplication().getExternalCacheDir().getPath()+"/export";
     }
 
 
@@ -169,7 +170,7 @@ public class ExportEmActivity extends BaseActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        eMlistAdapter=new EMlistAdapter(R.layout.activity_import_list,mList);
+        eMlistAdapter=new ExportEmAdapter(R.layout.activity_export_list,mList);
         recyclerView.setAdapter(eMlistAdapter);
 
     }
@@ -197,58 +198,35 @@ public class ExportEmActivity extends BaseActivity {
 
 
 
-    private class importFile extends AsyncTask<String,Void, EmBean>{
+    private class exportfile extends AsyncTask<EmBean, Void, Void> {
         @Override
-        protected EmBean doInBackground(String... path) {
-            String dirpath=path[0];
-            String filename=dirpath.substring(dirpath.lastIndexOf("/")+1,dirpath.lastIndexOf("."));
-            File file=new File(dirpath);
+        protected Void doInBackground(EmBean... emLists) {
+            EmBean exportEm=realm.copyFromRealm(emLists[0]);
             try {
-                InputStream txt=new FileInputStream(file);
-                final EmBean emList = Transform.importTxtToRealm("HYH",filename,txt);
-                return emList;
-            } catch (FileNotFoundException e) {
+                boolean isexport=Transform.exportTxtfrom(filePath,emLists[0].getName(),exportEm);
+                if (isexport){
+                    Log.v(TAG,"export success");
+                }
+            } catch (IOException e) {
+                Log.v(TAG,"export failed");
                 e.printStackTrace();
-                return null;
             }
+            return null;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             loadingDialog=   new ProgressDialog(ExportEmActivity.this);
-            loadingDialog.setTitle("正在导入任务");
+            loadingDialog.setTitle("正在导出文本");
             loadingDialog.setCancelable(false);
             loadingDialog.show();
-
         }
 
         @Override
-        protected void onPostExecute(EmBean emList) {
-            super.onPostExecute(emList);
-
-            realm.beginTransaction();
-            realm.insert(emList);
-            realm.commitTransaction();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            eMlistAdapter.notifyDataSetChanged();
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
             loadingDialog.dismiss();
-        }
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUESTCODE_FROM_ACTIVITY) {
-                List<String> list = data.getStringArrayListExtra("paths");
-                String path =list.get(0);
-                new importFile().execute(path);
-            }
         }
     }
 

@@ -167,7 +167,6 @@ public class EMListActivity extends BaseActivity {
         super.initData();
         Realm.init(getApplicationContext());
         realm=Realm.getDefaultInstance();
-        realm.refresh();
         hyh=new User();
         user_name=MyApplication.user.getUserName();
         hyh.setUserName(user_name);
