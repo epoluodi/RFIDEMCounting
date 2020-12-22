@@ -52,7 +52,7 @@ public class RFIDListActivity extends BaseActivity {
     private RFIDlistAdapter rfiDlistAdapter;
     private String task;
     private EmBean emList;
-
+    private static   EmBean em;
     @BindView(R.id.tv_all)
     TextView tv_all;
     @BindView(R.id.tv_count)
@@ -174,16 +174,45 @@ public class RFIDListActivity extends BaseActivity {
         tv_right_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final androidx.appcompat.app.AlertDialog.Builder normalDialog = new androidx.appcompat.app.AlertDialog.Builder(RFIDListActivity.this);
+                normalDialog.setCancelable(false);
+                normalDialog.setTitle("完成");
+                normalDialog.setMessage("确认完成盘点任务吗？");
+                normalDialog.setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                realm.beginTransaction();
+                                em.setState("已完成");
+                                realm.insertOrUpdate(em);
+                                realm.commitTransaction();
+                                Intent intent = new Intent(RFIDListActivity.this, EMListActivity.class);
+                                startActivity(intent);
+                                CommonUtil.openNewActivityAnim(RFIDListActivity.this, true);
+                            }
+                        });
+                normalDialog.setNegativeButton("取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+
+                normalDialog.show();
+
+               // em.setState("已完成");
+
               //  EmList em= realm.copyFromRealm(emList);
                 //new RFIDListActivity.exportfile().execute(em);
-                mRfidMgr.addEventListener(mEventListener);
+                /*mRfidMgr.addEventListener(mEventListener);
                 mRfidMgr.setDevicePower(true);
                 try {
                     Thread.sleep(500);//add this interval to avoid the poweroff op failed
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                mRfidMgr.connect(null);
+                mRfidMgr.connect(null);*/
             }
         });
 
@@ -220,7 +249,7 @@ public class RFIDListActivity extends BaseActivity {
         realm=Realm.getDefaultInstance();
        // realm.setAutoRefresh(true);
         emList=realm.where(EmBean.class).equalTo("id",task).findFirst();
-        EmBean em= realm.copyFromRealm(emList);
+        em= realm.copyFromRealm(emList);
         mList=em.getRfidList();
         rfiDlistAdapter.setNewData(mList);
     }
@@ -265,7 +294,7 @@ public class RFIDListActivity extends BaseActivity {
         iv_back.setVisibility(View.VISIBLE);
 
         tv_right_title.setVisibility(View.VISIBLE);
-        tv_right_title.setText("导出");
+        tv_right_title.setText("完成");
 
         tv_all.setText("共3条");
         tv_count.setText("已盘2条");

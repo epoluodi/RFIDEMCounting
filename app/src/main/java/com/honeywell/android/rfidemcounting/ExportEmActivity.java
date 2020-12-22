@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,14 +34,14 @@ import butterknife.BindView;
 import io.realm.Realm;
 import io.realm.Sort;
 
-public class EMListActivity extends BaseActivity {
-    private static final String TAG = "EMListActivity";
+public class ExportEmActivity extends BaseActivity {
+    private static final String TAG = "ExportEmActivity";
     private static int REQUESTCODE_FROM_ACTIVITY = 1000;
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
     Dialog loadingDialog;
-    private String user_name;
     private Realm realm;
+    private String user_name;
     User hyh;
     private List<EmBean> mList ;
     private EMlistAdapter eMlistAdapter;
@@ -53,7 +52,7 @@ public class EMListActivity extends BaseActivity {
     private static class MyHandler extends Handler {
         private WeakReference ref;
 
-        private MyHandler(EMListActivity act) {
+        private MyHandler(ExportEmActivity act) {
             ref = new WeakReference<>(act);
         }
 
@@ -62,7 +61,7 @@ public class EMListActivity extends BaseActivity {
             super.handleMessage(msg);
 
             if (ref.get() != null) {
-                ((EMListActivity) ref.get()).handleMessage(msg);
+                ((ExportEmActivity) ref.get()).handleMessage(msg);
             }
         }
     }
@@ -84,10 +83,10 @@ public class EMListActivity extends BaseActivity {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
-                    Intent intent = new Intent(EMListActivity.this, RFIDListActivity.class);
+                    Intent intent = new Intent(ExportEmActivity.this, RFIDListActivity.class);
                     intent.putExtra("task",  mList.get(position).getId());
                     startActivity(intent);
-                    CommonUtil.openNewActivityAnim(EMListActivity.this, false);
+                    CommonUtil.openNewActivityAnim(ExportEmActivity.this, false);
 
             }
         });
@@ -96,7 +95,7 @@ public class EMListActivity extends BaseActivity {
 
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-                final androidx.appcompat.app.AlertDialog.Builder normalDialog = new AlertDialog.Builder(EMListActivity.this);
+                final AlertDialog.Builder normalDialog = new AlertDialog.Builder(ExportEmActivity.this);
                 normalDialog.setCancelable(false);
                 normalDialog.setTitle("删除");
                 normalDialog.setMessage("确认删除任务吗？");
@@ -132,7 +131,7 @@ public class EMListActivity extends BaseActivity {
                 String filePath = getApplication().getExternalCacheDir().getPath()+"/import";
 
                 new LFilePicker()
-                        .withActivity(EMListActivity.this)
+                        .withActivity(ExportEmActivity.this)
                         .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
                         .withStartPath(filePath)
                         .withFileFilter( new String[]{".txt"})
@@ -143,24 +142,11 @@ public class EMListActivity extends BaseActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EMListActivity.this, MainActivity.class);
+                Intent intent = new Intent(ExportEmActivity.this, MainActivity.class);
                 startActivity(intent);
-                CommonUtil.openNewActivityAnim(EMListActivity.this, true);
+                CommonUtil.openNewActivityAnim(ExportEmActivity.this, true);
             }
         });
-
-      /*  unfinishied.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                Toast.makeText(getApplicationContext(), "未完成", Toast.LENGTH_SHORT).show();
-            }
-        });
-        finished.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                    Toast.makeText(getApplicationContext(), "完成", Toast.LENGTH_SHORT).show();
-                }
-            });*/
     }
     @Override
     public void initData() {
@@ -171,7 +157,7 @@ public class EMListActivity extends BaseActivity {
         hyh=new User();
         user_name=MyApplication.user.getUserName();
         hyh.setUserName(user_name);
-        mList=realm.where(EmBean.class).equalTo("username",user_name).equalTo("state","未完成").findAll().sort("time",Sort.ASCENDING);
+        mList=realm.where(EmBean.class).equalTo("username",user_name).equalTo("state","已完成").findAll().sort("time",Sort.ASCENDING);
         eMlistAdapter.setNewData(mList);
     }
 
@@ -183,7 +169,7 @@ public class EMListActivity extends BaseActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        eMlistAdapter=new EMlistAdapter(R.layout.activity_em_list,mList);
+        eMlistAdapter=new EMlistAdapter(R.layout.activity_import_list,mList);
         recyclerView.setAdapter(eMlistAdapter);
 
     }
@@ -192,10 +178,10 @@ public class EMListActivity extends BaseActivity {
     public void initTitle() {
         super.initTitle();
         tv_center_title.setVisibility(View.VISIBLE);
-        tv_center_title.setText("盘点任务列表");
+        tv_center_title.setText("导出任务列表");
 
         tv_right_title.setVisibility(View.VISIBLE);
-        tv_right_title.setText("导入");
+        tv_right_title.setText("导出");
 
         iv_back.setVisibility(View.VISIBLE);
     }
@@ -204,9 +190,9 @@ public class EMListActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(EMListActivity.this, MainActivity.class);
+        Intent intent = new Intent(ExportEmActivity.this, MainActivity.class);
         startActivity(intent);
-        CommonUtil.openNewActivityAnim(EMListActivity.this, true);
+        CommonUtil.openNewActivityAnim(ExportEmActivity.this, true);
     }
 
 
@@ -231,7 +217,7 @@ public class EMListActivity extends BaseActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            loadingDialog=   new ProgressDialog(EMListActivity.this);
+            loadingDialog=   new ProgressDialog(ExportEmActivity.this);
             loadingDialog.setTitle("正在导入任务");
             loadingDialog.setCancelable(false);
             loadingDialog.show();

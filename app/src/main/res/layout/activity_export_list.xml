@@ -31,6 +31,7 @@
 
         <RelativeLayout
             android:id="@+id/rl"
+            android:layout_marginTop="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -40,6 +41,7 @@
 
             <TextView
                 android:id="@+id/name"
+                android:padding="3dp"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
@@ -52,6 +54,7 @@
 
             <TextView
                 android:id="@+id/state"
+                android:padding="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -61,7 +64,16 @@
                 android:text="状态"
                 android:textColor="#515151"
                 android:textSize="13dp" />
-
+            <CheckBox
+                android:id="@+id/sel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="250dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="状态"
+                android:textColor="#515151"
+                android:textSize="13dp" />
         </RelativeLayout>
     </RelativeLayout>
 </LinearLayout>

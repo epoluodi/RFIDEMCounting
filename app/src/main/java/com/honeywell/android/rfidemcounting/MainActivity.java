@@ -86,6 +86,7 @@ public class MainActivity extends BaseActivity {
     public void initData() {
         Realm.init(getApplicationContext());
         realm=Realm.getDefaultInstance();
+        user_name=MyApplication.user.getUserName();
     }
 
     @Override
@@ -132,7 +133,7 @@ public class MainActivity extends BaseActivity {
 
                         break;
                     case 2:
-                        Intent intent3 = new Intent(MainActivity.this, SettingActivity.class);
+                        Intent intent3 = new Intent(MainActivity.this, ExportEmActivity.class);
                         startActivity(intent3);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
                         break;
@@ -147,6 +148,7 @@ public class MainActivity extends BaseActivity {
         @Override
         protected List<EmBean> doInBackground(List<String>... path) {
             try {
+
                 pathList=path[0];
                 List<EmBean> emLists=new ArrayList<>();
                 for (int i=0;i<path[0].size();i++) {
@@ -190,7 +192,6 @@ public class MainActivity extends BaseActivity {
                 File file=new File(pathList.get(i));
                 file.delete();
             }
-           // eMlistAdapter.notifyDataSetChanged();
             loadingDialog.dismiss();
         }
     }
