@@ -8,7 +8,7 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class EmList extends RealmObject {
+public class EmBean extends RealmObject {
     @PrimaryKey
     private String id;
     private String name;
@@ -16,7 +16,7 @@ public class EmList extends RealmObject {
     private String username;
     private RealmList<RFIDList> rfidList;
     private String time;
-    public EmList() {
+    public EmBean() {
 
             this.id = UUID.randomUUID().toString();;
 

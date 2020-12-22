@@ -37,7 +37,7 @@
                     android:drawablePadding="@dimen/margin"
                     android:paddingLeft="@dimen/margin"
                     android:background="@drawable/bg_et"
-                    android:id="@+id/et_phone"
+                    android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@+id/iv"

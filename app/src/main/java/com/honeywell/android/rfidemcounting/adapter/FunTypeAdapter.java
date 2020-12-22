@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.honeywell.android.rfidemcounting.R;
-import com.honeywell.android.rfidemcounting.bean.EmList;
 import com.honeywell.android.rfidemcounting.bean.FunctionType;
 
 import java.util.List;

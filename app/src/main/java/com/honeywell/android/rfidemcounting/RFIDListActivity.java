@@ -15,8 +15,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -26,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.honeywell.android.data.utils.Transform;
 import com.honeywell.android.rfidemcounting.adapter.RFIDlistAdapter;
-import com.honeywell.android.rfidemcounting.bean.EmList;
+import com.honeywell.android.rfidemcounting.bean.EmBean;
 import com.honeywell.android.rfidemcounting.bean.RFIDList;
 import com.honeywell.android.rfidemcounting.utils.CommonUtil;
 import com.honeywell.rfidservice.EventListener;
@@ -41,8 +39,6 @@ import com.honeywell.rfidservice.rfid.TagReadOption;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -55,7 +51,7 @@ public class RFIDListActivity extends BaseActivity {
     private static  List<RFIDList> mList ;
     private RFIDlistAdapter rfiDlistAdapter;
     private String task;
-    private EmList emList;
+    private EmBean emList;
 
     @BindView(R.id.tv_all)
     TextView tv_all;
@@ -223,8 +219,8 @@ public class RFIDListActivity extends BaseActivity {
         Realm.init(getApplicationContext());
         realm=Realm.getDefaultInstance();
        // realm.setAutoRefresh(true);
-        emList=realm.where(EmList.class).equalTo("id",task).findFirst();
-        EmList em= realm.copyFromRealm(emList);
+        emList=realm.where(EmBean.class).equalTo("id",task).findFirst();
+        EmBean em= realm.copyFromRealm(emList);
         mList=em.getRfidList();
         rfiDlistAdapter.setNewData(mList);
     }
@@ -398,10 +394,10 @@ public class RFIDListActivity extends BaseActivity {
 
     }
 
-    private class exportfile extends AsyncTask<EmList, Void, Void> {
+    private class exportfile extends AsyncTask<EmBean, Void, Void> {
         @Override
-        protected Void doInBackground(EmList... emLists) {
-            EmList exportEm=emLists[0];
+        protected Void doInBackground(EmBean... emLists) {
+            EmBean exportEm=emLists[0];
             try {
                 boolean isexport=Transform.exportTxtfrom(filePath,exportEm.getName(),exportEm);
                 if (isexport){

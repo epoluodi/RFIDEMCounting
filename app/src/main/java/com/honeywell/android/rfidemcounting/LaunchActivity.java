@@ -1,13 +1,6 @@
 package com.honeywell.android.rfidemcounting;
 
-import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.os.Handler;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-
-import com.honeywell.android.rfidemcounting.utils.PermissionUtils;
 
 import java.io.File;
 
@@ -37,7 +30,7 @@ public class LaunchActivity extends BaseActivity{
         new Handler().postDelayed(new Runnable() {
             public void run() {
 
-                startActivity(EmMainActivity.class);
+                startActivity(LoginActivity.class);
                 finish();
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }

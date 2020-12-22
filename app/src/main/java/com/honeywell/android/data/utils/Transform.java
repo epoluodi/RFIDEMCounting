@@ -2,11 +2,10 @@ package com.honeywell.android.data.utils;
 
 import com.google.gson.Gson;
 import com.honeywell.android.data.model.InventoryItem;
-import com.honeywell.android.data.model.InventoryItemState;
 import com.honeywell.android.data.model.InventoryTask;
 import com.honeywell.android.data.model.InventoryTaskState;
 import com.honeywell.android.data.model.TaskList;
-import com.honeywell.android.rfidemcounting.bean.EmList;
+import com.honeywell.android.rfidemcounting.bean.EmBean;
 import com.honeywell.android.rfidemcounting.bean.RFIDList;
 
 import java.io.BufferedReader;
@@ -80,8 +79,8 @@ public class Transform {
     }
 
 
-    public static EmList importTxtToRealm(String userName, String taskName, InputStream stream){
-         EmList emList=new EmList();
+    public static EmBean importTxtToRealm(String userName, String taskName, InputStream stream){
+         EmBean emList=new EmBean();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         emList.setTime( sdf.format(new Date()));
         emList.setUsername(userName);
@@ -117,7 +116,7 @@ public class Transform {
         return emList;
     }
 
-    public static boolean exportTxtfrom(String path, String taskName, EmList em) throws IOException {
+    public static boolean exportTxtfrom(String path, String taskName, EmBean em) throws IOException {
         String filename = path + "/" + taskName + ".txt";
         String temp = "";
 

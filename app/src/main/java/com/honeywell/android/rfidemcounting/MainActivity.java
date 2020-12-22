@@ -1,20 +1,33 @@
 package com.honeywell.android.rfidemcounting;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.honeywell.android.rfidemcounting.BaseActivity;
-import com.honeywell.android.rfidemcounting.R;
+import com.honeywell.android.data.model.User;
+import com.honeywell.android.data.utils.Transform;
 import com.honeywell.android.rfidemcounting.adapter.FunTypeAdapter;
+import com.honeywell.android.rfidemcounting.bean.EmBean;
 import com.honeywell.android.rfidemcounting.bean.FunctionType;
 import com.honeywell.android.rfidemcounting.utils.CommonUtil;
+import com.leon.lfilepickerlibrary.LFilePicker;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
+import io.realm.Realm;
 
 /**
  * Created by apple on 17/9/29.
@@ -25,7 +38,13 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
     private FunTypeAdapter mAdapter;
-    private int imgs[] = {R.mipmap.l3,R.mipmap.l2};
+    private static int REQUESTCODE_FROM_ACTIVITY = 1000;
+    private List<String> pathList;
+    private String user_name;
+    Dialog loadingDialog;
+    private Realm realm;
+    User hyh;
+    private int imgs[] = {R.mipmap.l3,R.mipmap.l2,R.mipmap.l1,R.mipmap.l2};
     private ArrayList<FunctionType> mList = new ArrayList<>();
 
 
@@ -47,8 +66,16 @@ public class MainActivity extends BaseActivity {
         FunctionType functionType1=new FunctionType();
         functionType1.des="设置";
         functionType1.img=R.mipmap.repair;
+        FunctionType functionType2=new FunctionType();
+        functionType2.des="导入";
+        functionType2.img=R.mipmap.l1;
+        FunctionType functionType3=new FunctionType();
+        functionType3.des="导出";
+        functionType3.img=R.mipmap.l3;
         mList.add(functionType);
         mList.add(functionType1);
+        mList.add(functionType2);
+        mList.add(functionType3);
         mAdapter = new FunTypeAdapter(R.layout.item_iv_tv1,mList);
         mAdapter.addHeaderView(v);
         recyclerView.setAdapter(mAdapter);
@@ -57,7 +84,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initData() {
-
+        Realm.init(getApplicationContext());
+        realm=Realm.getDefaultInstance();
     }
 
     @Override
@@ -92,8 +120,89 @@ public class MainActivity extends BaseActivity {
                         Intent intent1 = new Intent(MainActivity.this, SettingActivity.class);
                         startActivity(intent1);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
+                        break;
+                    case 2:
+                        String filePath = getApplication().getExternalCacheDir().getPath()+"/import";
+                        new LFilePicker()
+                                .withActivity(MainActivity.this)
+                                .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
+                                .withStartPath(filePath)
+                                .withFileFilter( new String[]{".txt"})
+                                .start();
+
+                        break;
+                    case 3:
+                        Intent intent3 = new Intent(MainActivity.this, SettingActivity.class);
+                        startActivity(intent3);
+                        CommonUtil.openNewActivityAnim(MainActivity.this, false);
+                        break;
                 }
             }
         });
+    }
+    //导入
+
+
+    private class importFile extends AsyncTask<List<String>,Void,List<EmBean>> {
+        @Override
+        protected List<EmBean> doInBackground(List<String>... path) {
+            try {
+                pathList=path[0];
+                List<EmBean> emLists=new ArrayList<>();
+                for (int i=0;i<path[0].size();i++) {
+                    String dirpath = path[0].get(i).toString();
+                    String filename = dirpath.substring(dirpath.lastIndexOf("/") + 1, dirpath.lastIndexOf("."));
+                    File file = new File(dirpath);
+                    InputStream txt = new FileInputStream(file);
+                    final EmBean emList = Transform.importTxtToRealm(user_name, filename, txt);
+                    emLists.add(emList);
+                }
+                return emLists;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingDialog=   new ProgressDialog(MainActivity.this);
+            loadingDialog.setTitle("正在导入任务");
+            loadingDialog.setCancelable(false);
+            loadingDialog.show();
+
+        }
+
+        @Override
+        protected void onPostExecute(List<EmBean> emList) {
+            super.onPostExecute(emList);
+
+            realm.beginTransaction();
+            realm.insert(emList);
+            realm.commitTransaction();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (int i=0;i<pathList.size();i++){
+                File file=new File(pathList.get(i));
+                file.delete();
+            }
+           // eMlistAdapter.notifyDataSetChanged();
+            loadingDialog.dismiss();
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUESTCODE_FROM_ACTIVITY) {
+                List<String> list = data.getStringArrayListExtra("paths");
+                // String path =list.get(0);
+                new importFile().execute(list);
+            }
+        }
     }
 }

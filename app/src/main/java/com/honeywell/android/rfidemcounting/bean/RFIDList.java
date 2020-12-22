@@ -11,18 +11,18 @@ public class RFIDList extends RealmObject {
     private String epcid;
     private String name;
     private String state;
-    private EmList emlist;
+    private EmBean emlist;
 
     public RFIDList() {
         this.id = UUID.randomUUID().toString();;
     }
 
 
-    public EmList getEmlist() {
+    public EmBean getEmlist() {
         return emlist;
     }
 
-    public void setEmlist(EmList emlist) {
+    public void setEmlist(EmBean emlist) {
         this.emlist = emlist;
     }
 

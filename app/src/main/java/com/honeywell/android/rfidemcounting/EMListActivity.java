@@ -8,52 +8,31 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.honeywell.android.data.DataEngine;
-import com.honeywell.android.data.DataManager;
-import com.honeywell.android.data.model.InventoryTask;
-import com.honeywell.android.data.model.TaskList;
 import com.honeywell.android.data.model.User;
 import com.honeywell.android.data.utils.Transform;
 import com.honeywell.android.rfidemcounting.adapter.EMlistAdapter;
-import com.honeywell.android.rfidemcounting.bean.EmList;
+import com.honeywell.android.rfidemcounting.bean.EmBean;
 import com.honeywell.android.rfidemcounting.utils.CommonUtil;
-import com.honeywell.android.rfidemcounting.utils.DialogUtil;
-import com.honeywell.rfidservice.EventListener;
-import com.honeywell.rfidservice.RfidManager;
-import com.honeywell.rfidservice.TriggerMode;
-import com.honeywell.rfidservice.rfid.RfidReader;
-import com.honeywell.rfidservice.rfid.TagAdditionData;
-import com.honeywell.rfidservice.rfid.TagReadOption;
 import com.leon.lfilepickerlibrary.LFilePicker;
-import com.suke.widget.SwitchButton;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import io.realm.Realm;
-import io.realm.RealmResults;
 import io.realm.Sort;
 
 public class EMListActivity extends BaseActivity {
@@ -62,11 +41,11 @@ public class EMListActivity extends BaseActivity {
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
     Dialog loadingDialog;
-    private SwitchButton unfinishied;
-    private SwitchButton finished;
+ /*   private SwitchButton unfinishied;
+    private SwitchButton finished;*/
     private Realm realm;
     User hyh;
-    private List<EmList> mList ;
+    private List<EmBean> mList ;
     private EMlistAdapter eMlistAdapter;
     @Override
     protected int attachLayoutRes() {
@@ -171,32 +150,18 @@ public class EMListActivity extends BaseActivity {
             }
         });
 
-        unfinishied.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+      /*  unfinishied.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                Toast.makeText(getApplicationContext(), "开关被单击", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "未完成", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-    /*方法：导入任务列表
-    参数：无
-    返回值：导入任务条数
-    */
-    int i=1;
-    private void importMissionList(){
-        InputStream txt = getResources().openRawResource(R.raw.inventorytxt);
-
-        final EmList emList = Transform.importTxtToRealm("HYH","Inventory"+String.valueOf(i++),txt);
-        try {
-            txt.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        realm.beginTransaction();
-        realm.insert(emList);
-        realm.commitTransaction();
-
-        eMlistAdapter.notifyDataSetChanged();
+        finished.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                    Toast.makeText(getApplicationContext(), "完成", Toast.LENGTH_SHORT).show();
+                }
+            });*/
     }
     @Override
     public void initData() {
@@ -204,8 +169,9 @@ public class EMListActivity extends BaseActivity {
         Realm.init(getApplicationContext());
         realm=Realm.getDefaultInstance();
         realm.refresh();
-
-        mList=realm.where(EmList.class).findAll().sort("time",Sort.ASCENDING);
+        hyh=new User();
+        hyh.setUserName(MyApplication.user.getUserName());
+        mList=realm.where(EmBean.class).findAll().sort("time",Sort.ASCENDING);
         eMlistAdapter.setNewData(mList);
     }
 
@@ -213,7 +179,8 @@ public class EMListActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-        unfinishied=(SwitchButton)findViewById(R.id.unfinished);
+      /*  unfinishied=(SwitchButton)findViewById(R.id.unfinished);
+        finished=(SwitchButton)findViewById(R.id.finished);*/
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -246,15 +213,15 @@ public class EMListActivity extends BaseActivity {
 
 
 
-    private class importFile extends AsyncTask<String,Void,EmList>{
+    private class importFile extends AsyncTask<String,Void, EmBean>{
         @Override
-        protected EmList doInBackground(String... path) {
+        protected EmBean doInBackground(String... path) {
             String dirpath=path[0];
             String filename=dirpath.substring(dirpath.lastIndexOf("/")+1,dirpath.lastIndexOf("."));
             File file=new File(dirpath);
             try {
                 InputStream txt=new FileInputStream(file);
-                final EmList   emList = Transform.importTxtToRealm("HYH",filename,txt);
+                final EmBean emList = Transform.importTxtToRealm("HYH",filename,txt);
                 return emList;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -274,7 +241,7 @@ public class EMListActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(EmList emList) {
+        protected void onPostExecute(EmBean emList) {
             super.onPostExecute(emList);
 
             realm.beginTransaction();

@@ -26,7 +26,7 @@
 
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".EmMainActivity">
+            android:name=".LoginActivity">
         </activity>
 
         <activity
@@ -51,10 +51,6 @@
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:name=".BtActivity">
-        </activity>
-        <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".ImportActivity">
         </activity>
     </application>
 

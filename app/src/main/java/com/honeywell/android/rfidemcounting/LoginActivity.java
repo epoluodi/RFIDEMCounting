@@ -3,9 +3,9 @@ package com.honeywell.android.rfidemcounting;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,7 +15,7 @@ import com.honeywell.android.rfidemcounting.utils.PermissionUtils;
 
 import butterknife.BindView;
 
-public class EmMainActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity {
 
     private long mExitTime = 0;
     @BindView(R.id.bt_exit)
@@ -23,6 +23,8 @@ public class EmMainActivity extends BaseActivity {
 
     @BindView(R.id.bt_login)
     public Button bt_login;
+
+    private EditText username;
     @Override
     protected int attachLayoutRes() {
         return R.layout.activity_login;
@@ -41,11 +43,14 @@ public class EmMainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //登录信息验证
-                if (true){
-
+                String login_user=username.getText().toString();
+                if ( !login_user.equals("")){
+                    MyApplication.user.setUserName(login_user);
                     startActivity(MainActivity.class);
                     finish();
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                }else {
+                    Toast.makeText(getApplicationContext(),"请输入用户名",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -73,6 +78,12 @@ public class EmMainActivity extends BaseActivity {
     }
 
     @Override
+    public void initView() {
+        super.initView();
+        username=(EditText)findViewById(R.id.username);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PermissionUtils.isGrantExternalRW(this,1);
@@ -91,7 +102,7 @@ public class EmMainActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(EmMainActivity.this, "未获取权限，请手动设置存储权限", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "未获取权限，请手动设置存储权限", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

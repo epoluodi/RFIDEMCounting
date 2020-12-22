@@ -5,8 +5,8 @@
     android:orientation="vertical">
 
     <include layout="@layout/app_title" />
-    <include layout="@layout/rfid_top" />
-    <include layout="@layout/rfid_middle"/>
+  <!--  <include layout="@layout/rfid_top" />
+    <include layout="@layout/rfid_middle"/>-->
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginBottom="20dp"
         android:overScrollMode="never"

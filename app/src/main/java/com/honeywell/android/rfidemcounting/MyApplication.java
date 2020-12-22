@@ -2,6 +2,7 @@ package com.honeywell.android.rfidemcounting;
 
 import android.app.Application;
 
+import com.honeywell.android.data.model.User;
 import com.honeywell.rfidservice.RfidManager;
 import com.honeywell.rfidservice.rfid.RfidReader;
 
@@ -10,12 +11,13 @@ public class MyApplication extends Application {
     public RfidManager rfidMgr;
     public RfidReader mRfidReader;
     public String macAddress;
-
+    public static User user;
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
         rfidMgr = RfidManager.getInstance(this);
+        user=new User();
     }
 
     public static MyApplication getInstance() {
