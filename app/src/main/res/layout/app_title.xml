@@ -3,7 +3,7 @@
     android:id="@+id/app_title_rela"
     android:layout_width="match_parent"
     android:layout_height="49dp"
-    android:background="@color/colorPrimary">
+    android:background="@color/color5">
 
     <ImageView
         android:id="@+id/iv_back"

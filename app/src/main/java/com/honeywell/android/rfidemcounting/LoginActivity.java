@@ -18,8 +18,7 @@ import butterknife.BindView;
 public class LoginActivity extends BaseActivity {
 
     private long mExitTime = 0;
-    @BindView(R.id.bt_exit)
-    public Button bt_exit;
+
 
     @BindView(R.id.bt_login)
     public Button bt_login;
@@ -32,12 +31,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void setListener() {
-        bt_exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _exit();
-            }
-        });
+
 
         bt_login.setOnClickListener(new View.OnClickListener() {
             @Override

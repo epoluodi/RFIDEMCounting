@@ -1,11 +1,11 @@
 <resources>
 
  <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/color5</item>
+        <item name="colorPrimaryDark">@color/color5</item>
+        <item name="colorAccent">@color/color5</item>
     </style>
 
     <!--避免第一次进来白屏或黑屏-->

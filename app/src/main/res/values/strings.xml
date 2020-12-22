@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RFIDEMCounting</string>
+    <string name="app_name">RFID盘点</string>
 
     <!--ante power settings-->
     <string name="read_power_ante1_title">Ant read power</string>
