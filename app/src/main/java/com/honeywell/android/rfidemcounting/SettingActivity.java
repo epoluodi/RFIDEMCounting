@@ -28,6 +28,10 @@ public class SettingActivity extends BaseActivity{
 
     @BindView(R.id.btBtn)
     public Button btBtn;
+
+    @BindView(R.id.btBtnExit)
+    public Button btnExit;
+
 //    @BindView(R.id.comBtn)
 //    public Button comBtn;
     private RfidManager mRfidMgr;
@@ -57,6 +61,14 @@ public class SettingActivity extends BaseActivity{
             btBtn.setVisibility(View.INVISIBLE);
         }
 
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(1);
+                finish();
+
+            }
+        });
     }
 
     @Override

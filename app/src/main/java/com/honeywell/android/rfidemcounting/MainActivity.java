@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity {
                         break;
                     case 3:
                         Intent intent1 = new Intent(MainActivity.this, SettingActivity.class);
-                        startActivity(intent1);
+                        startActivityForResult(intent1,1);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
                         break;
                     case 1:
@@ -207,6 +207,12 @@ public class MainActivity extends BaseActivity {
                 // String path =list.get(0);
                 new importFile().execute(list);
             }
+        }else if (resultCode ==1)
+        {
+            //退出登录
+            Intent intent=new Intent(MainActivity.this,LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 }
