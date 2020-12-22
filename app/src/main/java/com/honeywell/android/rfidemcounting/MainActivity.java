@@ -3,6 +3,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import butterknife.BindView;
@@ -123,12 +125,13 @@ public class MainActivity extends BaseActivity {
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
                         break;
                     case 1:
-                        String filePath = getApplication().getExternalCacheDir().getPath()+"/import";
+                        String filePath = Environment.getExternalStorageDirectory() +"/import";
                         new LFilePicker()
                                 .withActivity(MainActivity.this)
                                 .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
                                 .withStartPath(filePath)
                                 .withFileFilter( new String[]{".txt"})
+                                .withBackgroundColor("#24C4E2")
                                 .start();
 
                         break;

@@ -194,8 +194,8 @@ public class EMListActivity extends BaseActivity {
         tv_center_title.setVisibility(View.VISIBLE);
         tv_center_title.setText("盘点任务列表");
 
-        tv_right_title.setVisibility(View.VISIBLE);
-        tv_right_title.setText("导入");
+        tv_right_title.setVisibility(View.INVISIBLE);
+//        tv_right_title.setText("导入");
 
         iv_back.setVisibility(View.VISIBLE);
     }

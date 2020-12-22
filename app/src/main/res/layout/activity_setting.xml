@@ -2,13 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="@mipmap/backimg"
     android:layout_height="match_parent">
     <include layout="@layout/app_title" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gray">
+        android:background="@color/transparent">
 
         <FrameLayout
             android:id="@+id/ante_setting"
@@ -17,24 +18,19 @@
 
         <Button
             android:id="@+id/btBtn"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="113dp"
-            android:background="@color/blue"
+            android:background="@drawable/btn0_ripple"
             android:text="蓝设备连接"
-            android:textSize="15sp" />
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/comBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="199dp"
-            android:background="@color/blue"
-            android:text="COM设备连接"
-            android:textSize="15sp" />
+
 
     </RelativeLayout>
 
