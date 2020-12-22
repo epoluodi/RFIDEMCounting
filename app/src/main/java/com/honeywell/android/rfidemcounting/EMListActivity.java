@@ -37,6 +37,7 @@ import com.honeywell.rfidservice.rfid.RfidReader;
 import com.honeywell.rfidservice.rfid.TagAdditionData;
 import com.honeywell.rfidservice.rfid.TagReadOption;
 import com.leon.lfilepickerlibrary.LFilePicker;
+import com.suke.widget.SwitchButton;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,14 +62,15 @@ public class EMListActivity extends BaseActivity {
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
     Dialog loadingDialog;
-
+    private SwitchButton unfinishied;
+    private SwitchButton finished;
     private Realm realm;
     User hyh;
     private List<EmList> mList ;
     private EMlistAdapter eMlistAdapter;
     @Override
     protected int attachLayoutRes() {
-        return R.layout.comment_list;
+        return R.layout.comment_list_rfid;
     }
     private static class MyHandler extends Handler {
         private WeakReference ref;
@@ -96,7 +98,6 @@ public class EMListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
     }
-
 
 
         @Override
@@ -169,6 +170,13 @@ public class EMListActivity extends BaseActivity {
                 CommonUtil.openNewActivityAnim(EMListActivity.this, true);
             }
         });
+
+        unfinishied.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                Toast.makeText(getApplicationContext(), "开关被单击", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     /*方法：导入任务列表
     参数：无
@@ -205,6 +213,7 @@ public class EMListActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
+        unfinishied=(SwitchButton)findViewById(R.id.unfinished);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);

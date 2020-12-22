@@ -15,6 +15,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -65,7 +67,6 @@ public class RFIDListActivity extends BaseActivity {
     private RfidReader mReader;
     @BindView(R.id.tv_unknown)
     TextView tv_unknown;
-
     private final static String ACTION_HONEYWLL="com.honeywell";
     private String filePath ;
     private Realm realm;
@@ -234,6 +235,7 @@ public class RFIDListActivity extends BaseActivity {
         mMyApplication = MyApplication.getInstance();
         mRfidMgr = mMyApplication.rfidMgr;
         mRfidMgr.addEventListener(mEventListener);
+
         AntennaPower[] antennaPower=getAntennaPower();
         if (antennaPower.length>0){
            readPower= antennaPower[0].getReadPower();

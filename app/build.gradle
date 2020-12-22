@@ -49,5 +49,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.leon:lfilepickerlibrary:1.8.0'
     implementation(name: 'honeywell_rfid_sdk-release', ext: 'aar')
+    implementation 'com.github.zcweng:switch-button:0.0.3@aar'
 
 }
