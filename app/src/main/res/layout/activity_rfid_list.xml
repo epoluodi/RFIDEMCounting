@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:background="@color/white">
+       >
         <View
             style="@style/divider_ca"
             android:layout_alignParentTop="true" />

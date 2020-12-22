@@ -1,10 +1,13 @@
 package com.honeywell.android.rfidemcounting;
 
 import android.app.Application;
+import android.os.Environment;
 
 import com.honeywell.android.data.model.User;
 import com.honeywell.rfidservice.RfidManager;
 import com.honeywell.rfidservice.rfid.RfidReader;
+
+import java.io.File;
 
 public class MyApplication extends Application {
     private static MyApplication mInstance;
@@ -18,6 +21,12 @@ public class MyApplication extends Application {
         mInstance = this;
         rfidMgr = RfidManager.getInstance(this);
         user=new User();
+
+        File file =new File(Environment.getExternalStorageDirectory() +"/import");
+        if (!file.exists())
+        {
+            file.mkdir();
+        }
     }
 
     public static MyApplication getInstance() {

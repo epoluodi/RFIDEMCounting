@@ -28,12 +28,12 @@
     </style>
 
     <style name="divider_e9">
-        <item name="android:background">#e9e9e9</item>
+        <item name="android:background">@color/blackTransparent2</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">10dp</item>
+        <item name="android:layout_height">1dp</item>
     </style>
     <style name="divider_ca">
-        <item name="android:background">#cacaca</item>
+        <item name="android:background">@color/blackTransparent1</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0.5dp</item>
     </style>
