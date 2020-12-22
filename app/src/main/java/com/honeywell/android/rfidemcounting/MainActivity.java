@@ -116,12 +116,12 @@ public class MainActivity extends BaseActivity {
                         startActivity(intent);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
                         break;
-                    case 1:
+                    case 3:
                         Intent intent1 = new Intent(MainActivity.this, SettingActivity.class);
                         startActivity(intent1);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
                         break;
-                    case 2:
+                    case 1:
                         String filePath = getApplication().getExternalCacheDir().getPath()+"/import";
                         new LFilePicker()
                                 .withActivity(MainActivity.this)
@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity {
                                 .start();
 
                         break;
-                    case 3:
+                    case 2:
                         Intent intent3 = new Intent(MainActivity.this, SettingActivity.class);
                         startActivity(intent3);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
