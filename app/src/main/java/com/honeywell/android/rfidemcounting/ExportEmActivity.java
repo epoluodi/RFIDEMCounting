@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -167,7 +168,7 @@ public class ExportEmActivity extends BaseActivity {
         hyh.setUserName(user_name);
         mList=realm.where(EmBean.class).equalTo("username",user_name).equalTo("state","已完成").or().equalTo("state","已导出").findAll().sort("time",Sort.ASCENDING);
         eMlistAdapter.setNewData(mList);
-        filePath = getApplication().getExternalCacheDir().getPath()+"/export";
+        filePath = Environment.getExternalStorageDirectory()+"/export";
     }
 
 
@@ -239,6 +240,7 @@ public class ExportEmActivity extends BaseActivity {
             loadingDialog.dismiss();
             eMlistAdapter.notifyDataSetChanged();
             Toast.makeText(getApplicationContext(),"导出成功!",Toast.LENGTH_SHORT);
+
         }
     }
 

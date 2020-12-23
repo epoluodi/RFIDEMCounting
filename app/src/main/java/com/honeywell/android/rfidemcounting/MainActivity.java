@@ -196,6 +196,9 @@ public class MainActivity extends BaseActivity {
                 file.delete();
             }
             loadingDialog.dismiss();
+            Intent intent = new Intent(MainActivity.this, EMListActivity.class);
+            startActivity(intent);
+            CommonUtil.openNewActivityAnim(MainActivity.this, true);
         }
     }
     @Override

@@ -12,6 +12,10 @@ public class RFIDList extends RealmObject {
     private String name;
     private String state;
     private EmBean emlist;
+    private String emtime;
+    private String reason;
+    private String emname;
+    private boolean isem=false;
 
     public RFIDList() {
         this.id = UUID.randomUUID().toString();;
@@ -20,6 +24,38 @@ public class RFIDList extends RealmObject {
 
     public EmBean getEmlist() {
         return emlist;
+    }
+
+    public String getEmtime() {
+        return emtime;
+    }
+
+    public boolean isIsem() {
+        return isem;
+    }
+
+    public void setIsem(boolean isem) {
+        this.isem = isem;
+    }
+
+    public String getEmname() {
+        return emname;
+    }
+
+    public void setEmname(String emname) {
+        this.emname = emname;
+    }
+
+    public void setEmtime(String emtime) {
+        this.emtime = emtime;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     public void setEmlist(EmBean emlist) {

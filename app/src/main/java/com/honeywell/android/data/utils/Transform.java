@@ -97,11 +97,12 @@ public class Transform {
                 Thread.sleep(10);
                 if(!line.startsWith("#")){
                     RFIDList rfid=new RFIDList();
-
+                    rfid.setReason("未盘");
                     rfid.setEmlist(emList);
                     rfid.setEpcid(line);
                     rfid.setState("未盘");
                     rfid.setName("name");
+                    rfid.setEmname(userName);
                     tasks.add(rfid);
                 }
             }
@@ -144,10 +145,15 @@ public class Transform {
                 isr = new InputStreamReader(fis);
                 br = new BufferedReader(isr);
                 StringBuffer buf = new StringBuffer();
-                buf = new StringBuffer("epcid state\n");
+                buf = new StringBuffer("epcid state name reason time\n");
                 // 保存该文件原有的内容
                 for (int i = 0; i < emBean.getRfidList().size(); i++) {
-                    buf = buf.append(emBean.getRfidList().get(i).getEpcid() + " " + emBean.getRfidList().get(i).getState() + "\n");
+                    buf = buf.append(emBean.getRfidList().get(i).getEpcid() + " "
+                            + emBean.getRfidList().get(i).getState() + " "+
+                                    emBean.getRfidList().get(i).getEmname() + " "+
+                                    emBean.getRfidList().get(i).getReason()+" "+
+                                    emBean.getRfidList().get(i).getEmtime()+"\n"
+                            );
                 }
 
 

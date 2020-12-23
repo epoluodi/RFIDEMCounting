@@ -110,7 +110,37 @@ public class RFIDDetailsActivity extends BaseActivity {
     public void setListener() {
 
 
+        tv_right_title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final androidx.appcompat.app.AlertDialog.Builder normalDialog = new androidx.appcompat.app.AlertDialog.Builder(RFIDDetailsActivity.this);
+                normalDialog.setCancelable(false);
+                normalDialog.setTitle("重新继续盘点");
+                normalDialog.setMessage("确认重新继续盘点吗？");
+                normalDialog.setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                realm.beginTransaction();
+                                em.setState("未完成");
+                                realm.insertOrUpdate(em);
+                                realm.commitTransaction();
+                                Intent intent = new Intent(RFIDDetailsActivity.this, EMListActivity.class);
+                                startActivity(intent);
+                                CommonUtil.openNewActivityAnim(RFIDDetailsActivity.this, true);
+                            }
+                        });
+                normalDialog.setNegativeButton("取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
+                            }
+                        });
+
+                normalDialog.show();
+            }
+        });
 
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +198,8 @@ public class RFIDDetailsActivity extends BaseActivity {
 
         iv_back.setVisibility(View.VISIBLE);
 
+        tv_right_title.setText("继续盘点");
+        tv_right_title.setVisibility(View.VISIBLE);
         tv_all.setText("共3条");
         tv_count.setText("已盘2条");
         tv_unknown.setText("1条未知");

@@ -43,7 +43,7 @@ public class AntePowerFragment extends PreferenceFragmentCompat implements Prefe
         ap[0] = new AntennaPower(1, sp.getInt("ReadPower", 3000),
                 sp.getInt("WritePower", 3000));
 
-        //ap[0] = new AntennaPower(1, SettingParam.AnteReadPower, SettingParam.AnteWritePower);
+        ap[0] = new AntennaPower(1, SettingParam.AnteReadPower, SettingParam.AnteWritePower);
 
         return ap;
     }

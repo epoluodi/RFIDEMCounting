@@ -35,7 +35,7 @@ public class SettingActivity extends BaseActivity{
 //    @BindView(R.id.comBtn)
 //    public Button comBtn;
     private RfidManager mRfidMgr;
-//    private RfidReader mReader;
+    private RfidReader mReader;
     private static String TAG="SettingActivity";
     private MyApplication mMyApplication;
     @Override
@@ -51,7 +51,7 @@ public class SettingActivity extends BaseActivity{
 
         iv_back.setVisibility(View.VISIBLE);
         mRfidMgr = MyApplication.getInstance().rfidMgr;
-//        mReader = MyApplication.getInstance().mRfidReader;
+        mReader = MyApplication.getInstance().mRfidReader;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();   //开启Fragment事务
         transaction.add(R.id.ante_setting, new AntePowerFragment());    //将天线设置Fragment视图放置到FrameLayout布局中
         transaction.commit();       //Fragment调用生效
@@ -76,7 +76,6 @@ public class SettingActivity extends BaseActivity{
             public void onClick(View v) {
                 setResult(1);
                 finish();
-
             }
         });
     }
