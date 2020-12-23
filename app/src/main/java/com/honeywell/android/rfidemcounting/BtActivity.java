@@ -4,12 +4,16 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +38,9 @@ import com.honeywell.rfidservice.TriggerMode;
 import com.honeywell.rfidservice.rfid.RfidReader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.OnClick;
 
@@ -49,9 +55,9 @@ public class BtActivity extends BaseActivity {
 
     private Handler mHandler = new Handler();
     private ProgressDialog mWaitDialog;
-    private TextView mTvInfo;
+
     private Button mBtnConnect;
-    private Button mBtnCreateReader;
+
     private ListView mLv;
     private MyAdapter mAdapter;
     private List<BtDeviceInfo> mDevices = new ArrayList();
@@ -70,16 +76,16 @@ public class BtActivity extends BaseActivity {
 
         iv_back.setVisibility(View.VISIBLE);
 
-        iv_right_title.setVisibility(View.VISIBLE);
-        iv_right_title.setImageResource(R.mipmap.l1);
+        tv_right_title.setVisibility(View.VISIBLE);
+        tv_right_title.setText("搜索");
 
         mMyApplication = MyApplication.getInstance();
         mRfidMgr = mMyApplication.rfidMgr;
 
-        mTvInfo = findViewById(R.id.tv_info);
+
         mBtnConnect = findViewById(R.id.btn_connect);
-        mBtnCreateReader = findViewById(R.id.btn_create_reader);
-        showBtn();
+
+
         mLv = findViewById(R.id.lv);
         mAdapter = new MyAdapter(this, mDevices);
         mLv.setAdapter(mAdapter);
@@ -98,7 +104,7 @@ public class BtActivity extends BaseActivity {
             }
         });
 
-        iv_right_title.setOnClickListener(new View.OnClickListener() {
+        tv_right_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 scan();
@@ -109,15 +115,29 @@ public class BtActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mRfidMgr.addEventListener(mEventListener);
-    }
 
+
+        //搜索开始通知
+
+        registerReceiver(BluetoothAdapter.ACTION_DISCOVERY_STARTED, broadcastReceiver);
+        //搜索完成通知
+        registerReceiver(BluetoothAdapter.ACTION_DISCOVERY_FINISHED, broadcastReceiver);
+        //蓝牙设备找到通知
+        registerReceiver(BluetoothDevice.ACTION_FOUND, broadcastReceiver);
+
+
+    }
+    private void registerReceiver(String action, BroadcastReceiver receiver) {
+        IntentFilter intentFilter = new IntentFilter(action);
+        registerReceiver(receiver, intentFilter);
+    }
     @Override
     protected void onPause() {
         super.onPause();
         stopScan();
-        mHandler.removeCallbacksAndMessages(null);
-        mRfidMgr.removeEventListener(mEventListener);
+
+
+        unregisterReceiver(broadcastReceiver);
     }
 
     private boolean requestPermissions() {
@@ -137,22 +157,7 @@ public class BtActivity extends BaseActivity {
         return true;
     }
 
-    private void showBtn() {
-        mTvInfo.setTextColor(Color.rgb(128, 128, 128));
 
-        if (isConnected()) {
-            mTvInfo.setText(mMyApplication.macAddress + " 已连接！");
-            mTvInfo.setTextColor(Color.rgb(0, 128, 0));
-            mBtnConnect.setEnabled(true);
-            mBtnConnect.setText("断开连接");
-            mBtnCreateReader.setEnabled(true);
-        } else {
-            mTvInfo.setText("RFID设备未连接！");
-            mBtnConnect.setEnabled(mSelectedIdx != -1);
-            mBtnConnect.setText("连接");
-            mBtnCreateReader.setEnabled(false);
-        }
-    }
 
     private boolean isConnected() {
         if (mRfidMgr.isConnected()) {
@@ -170,16 +175,7 @@ public class BtActivity extends BaseActivity {
         }
     }
 
-    public void clickBtnCreateReader(View view) {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mRfidMgr.createReader();
-            }
-        }, 1000);
 
-        mWaitDialog = ProgressDialog.show(this, null, "正在创建读写器...");
-    }
 
     private void scan() {
         if (!requestPermissions()) {
@@ -189,7 +185,9 @@ public class BtActivity extends BaseActivity {
         mDevices.clear();
         mSelectedIdx = -1;
         mAdapter.notifyDataSetChanged();
-        mBluetoothAdapter.startLeScan(mLeScanCallback);
+//        mBluetoothAdapter.startLeScan(mLeScanCallback);
+
+        mBluetoothAdapter.startDiscovery();
 
         mWaitDialog = ProgressDialog.show(this, null, "正在扫描蓝牙设备...");
         mWaitDialog.setCancelable(false);
@@ -199,11 +197,57 @@ public class BtActivity extends BaseActivity {
             public void run() {
                 stopScan();
             }
-        }, 5 * 1000);
+        }, 10 * 1000);
     }
 
+
+    private BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)) {
+                Log.e("----", "搜索开始");
+                mDevices.clear();
+
+            } else if (intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)) {
+                Log.e("-----", "搜索完成");
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        stopScan();
+                    }
+                });
+
+
+
+            } else if (intent.getAction().equals(BluetoothDevice.ACTION_PAIRING_REQUEST)) {
+                Log.e("配对请求", "配对请求");
+            } else if (intent.getAction().equals(BluetoothDevice.ACTION_FOUND)) {
+
+                BluetoothDevice mdevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                short rssi = intent.getExtras().getShort(
+                        BluetoothDevice.EXTRA_RSSI);
+                Log.e("----", "Discovery Found " + mdevice.getName() +
+                        " " + mdevice.getAddress());
+
+                if (mdevice.getName() != null &&
+                        (mdevice.getName().contains("IH25") )) {
+                    mDevices.add(new BtDeviceInfo(mdevice,rssi));
+
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+            }
+        }
+    };
     private void stopScan() {
-        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+        mBluetoothAdapter.cancelDiscovery();
         closeWaitDialog();
     }
 
@@ -233,11 +277,14 @@ public class BtActivity extends BaseActivity {
         public void onDeviceConnected(Object o) {
             mMyApplication.macAddress = (String) o;
 
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showBtn();
+
                     closeWaitDialog();
+                    Toast.makeText(BtActivity.this, "读写器已连接", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             });
         }
@@ -247,7 +294,7 @@ public class BtActivity extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showBtn();
+
                     closeWaitDialog();
                 }
             });
@@ -255,9 +302,7 @@ public class BtActivity extends BaseActivity {
 
         @Override
         public void onReaderCreated(boolean b, RfidReader rfidReader) {
-            MyApplication.getInstance().mRfidReader = rfidReader;
-            Toast.makeText(BtActivity.this, "读写器已连接", Toast.LENGTH_SHORT).show();
-            finish();
+
         }
 
         @Override
@@ -269,41 +314,7 @@ public class BtActivity extends BaseActivity {
         }
     };
 
-    private long mPrevListUpdateTime;
-    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-        @Override
-        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            if (device.getName() != null && !device.getName().isEmpty()) {
-                synchronized (mDevices) {
-                    boolean newDevice = true;
 
-                    for (BtDeviceInfo info : mDevices) {
-                        if (device.getAddress().equals(info.dev.getAddress())) {
-                            newDevice = false;
-                            info.rssi = rssi;
-                        }
-                    }
-
-                    if (newDevice) {
-                        mDevices.add(new BtDeviceInfo(device, rssi));
-                    }
-
-                    long cur = System.currentTimeMillis();
-
-                    if (newDevice || cur - mPrevListUpdateTime > 500) {
-                        mPrevListUpdateTime = cur;
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                }
-            }
-        }
-    };
 
     private class BtDeviceInfo {
         BluetoothDevice dev;
@@ -364,7 +375,7 @@ public class BtActivity extends BaseActivity {
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             mSelectedIdx = i;
             mAdapter.notifyDataSetChanged();
-            showBtn();
+
         }
     };
 }

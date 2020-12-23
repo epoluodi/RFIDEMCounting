@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -117,6 +118,73 @@ public class RFIDListActivity extends BaseActivity {
         mMyHandler = new MyHandler(this);
 
 
+        if (!mRfidMgr.isSerialDevice()) {
+
+            if (!mRfidMgr.isConnected()) {
+                Toast.makeText(RFIDListActivity.this,
+                        "请进入设置，选择IH25设备进行连接", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(500);//add this interval to avoid the poweroff op failed
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadingDialog = new ProgressDialog(RFIDListActivity.this);
+                                loadingDialog.setTitle("正在连接RFID读写器");
+                                loadingDialog.setCancelable(false);
+                                loadingDialog.show();
+                            }
+                        });
+
+                        mRfidMgr.addEventListener(mEventListener);
+                        mRfidMgr.setDevicePower(true);
+                        mRfidMgr.setTriggerMode(TriggerMode.RFID);
+                        try {
+                            mRfidMgr.createReader();
+                            try {
+                                Thread.sleep(1000);//add this interval to avoid the poweroff op failed
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(RFIDListActivity.this,
+                                            "RFID连接", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(RFIDListActivity.this,
+                                        "RFID连接失败", Toast.LENGTH_SHORT).show();
+                                loadingDialog.dismiss();
+                            }
+                        });
+                    }
+                }
+            }).start();
+
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -164,6 +232,8 @@ public class RFIDListActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            Toast.makeText(RFIDListActivity.this,
+                                    "RFID连接失败", Toast.LENGTH_SHORT).show();
                             loadingDialog.dismiss();
                         }
                     });
@@ -197,6 +267,15 @@ public class RFIDListActivity extends BaseActivity {
     public void handleMessage(Message msg) {
         switch (msg.what) {
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+
+        if (keyCode == 4)
+            onClickListenerback.onClick(iv_back);
+        return true;
+
     }
 
     int readPower;
@@ -275,20 +354,32 @@ public class RFIDListActivity extends BaseActivity {
             }
         });
 
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mReader != null) {
-                    mReader.release();
-                    mRfidMgr.disconnect();
-                }
-                mList = null;
-                Intent intent = new Intent(RFIDListActivity.this, EMListActivity.class);
-                startActivity(intent);
-                CommonUtil.openNewActivityAnim(RFIDListActivity.this, true);
-            }
-        });
+        iv_back.setOnClickListener(onClickListenerback);
     }
+
+    private View.OnClickListener onClickListenerback=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mReader != null) {
+                if (!mRfidMgr.isSerialDevice()) {
+                    if (mRfidMgr.isConnected()){
+                        mReader.release();
+                        Log.e("RFID设备","IH25 释放");
+                    }
+
+
+                } else {
+                    mRfidMgr.disconnect();
+                    Log.e("RFID设备","读写器 释放");
+                }
+            }
+            mList = null;
+            Intent intent = new Intent(RFIDListActivity.this, EMListActivity.class);
+            startActivity(intent);
+            CommonUtil.openNewActivityAnim(RFIDListActivity.this, true);
+        }
+    };
+
 
     private AntennaPower[] getAntennaPower() {
         AntennaPower[] ap = new AntennaPower[1];
@@ -394,10 +485,22 @@ public class RFIDListActivity extends BaseActivity {
         public void onReaderCreated(boolean b, RfidReader rfidReader) {
             mReader = rfidReader;
             Log.v(TAG, "onReaderCreated");
+            AntennaPower[] ap = new AntennaPower[1];
+
+            SharedPreferences sp = getSharedPreferences("SettingParam", Context.MODE_PRIVATE);
+            ap[0] = new AntennaPower(1, sp.getInt("ReadPower", 3000),
+                    sp.getInt("WritePower", 3000));
+            try {
+                mReader.setAntennaPower(ap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    loadingDialog.dismiss();
+                    if (loadingDialog != null)
+                        loadingDialog.dismiss();
                 }
             });
         }

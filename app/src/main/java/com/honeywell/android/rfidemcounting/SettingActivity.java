@@ -60,6 +60,16 @@ public class SettingActivity extends BaseActivity{
         {
             btBtn.setVisibility(View.INVISIBLE);
         }
+        else
+        {
+            btBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SettingActivity.this, BtActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
 
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
