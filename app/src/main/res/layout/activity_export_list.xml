@@ -2,20 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/blackTransparent1"
     android:orientation="vertical">
 
     <View style="@style/divider_e9" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/white">
-        <View
-            style="@style/divider_ca"
-            android:layout_alignParentTop="true" />
+     >
+<!--        <View-->
+<!--            style="@style/divider_ca"-->
+<!--            android:layout_alignParentTop="true" />-->
 
-        <View
-            style="@style/divider_ca"
-            android:layout_alignParentBottom="true" />
+<!--        <View-->
+<!--            style="@style/divider_ca"-->
+<!--            android:layout_alignParentBottom="true" />-->
 
         <TextView
             android:id="@+id/index"
@@ -31,8 +32,10 @@
 
         <RelativeLayout
             android:id="@+id/rl"
-            android:layout_marginTop="3dp"
-            android:layout_width="wrap_content"
+
+
+            android:layout_marginRight="16dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margin"
@@ -42,34 +45,39 @@
             <TextView
                 android:id="@+id/name"
                 android:padding="3dp"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="3dp"
+
+
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="任务名称"
-                android:textColor="#515151"
-                android:textSize="13dp" />
+                android:layout_toLeftOf="@+id/state"
+                android:textColor="@color/white"
+                android:textSize="17dp" />
 
             <TextView
                 android:id="@+id/state"
                 android:padding="3dp"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:layout_alignRight="@id/name"
+               android:layout_toLeftOf="@+id/sel"
+                android:layout_marginRight="5dp"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="状态"
-                android:textColor="#515151"
+                android:textColor="@color/white"
                 android:textSize="13dp" />
 
             <CheckBox
+                android:layout_marginTop="3dp"
+                android:layout_alignParentRight="true"
                 android:id="@+id/sel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="230dp"
+                style="@style/CustomCheckboxTheme"
                 />
         </RelativeLayout>
     </RelativeLayout>

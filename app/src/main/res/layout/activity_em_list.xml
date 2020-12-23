@@ -34,7 +34,8 @@
 
         <RelativeLayout
             android:id="@+id/rl"
-            android:layout_width="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margin"
@@ -43,21 +44,22 @@
 
             <TextView
                 android:id="@+id/name"
-                android:layout_width="230dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="10dp"
                 android:layout_centerHorizontal="true"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="任务名称"
                 android:textColor="@color/white"
+                android:layout_toLeftOf="@+id/state"
                 android:textSize="17dp" />
 
             <TextView
                 android:id="@+id/state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@id/name"
+                android:layout_alignParentRight="true"
                 android:layout_marginTop="3dp"
                 android:ellipsize="end"
                 android:singleLine="true"
