@@ -1,5 +1,6 @@
 package com.honeywell.android.rfidemcounting;
 
+import android.os.Environment;
 import android.os.Handler;
 
 import java.io.File;
@@ -15,7 +16,20 @@ public class LaunchActivity extends BaseActivity{
     @Override
     public void initData() {
         super.initData();
-       String filePath = this.getExternalCacheDir().getPath()+"/import";
+
+
+        File file =new File(Environment.getExternalStorageDirectory() +"/import");
+        if (!file.exists())
+        {
+            file.mkdir();
+        }
+
+        file =new File(Environment.getExternalStorageDirectory() +"/export");
+        if (!file.exists())
+        {
+            file.mkdir();
+        }
+      /* String filePath = this.getExternalCacheDir().getPath()+"/import";
         File file = new File(filePath);
         if (!file.exists()) {
             // 创建文件夹
@@ -26,7 +40,7 @@ public class LaunchActivity extends BaseActivity{
         if (!file.exists()) {
             // 创建文件夹
             file.mkdirs();
-        }
+        }*/
         new Handler().postDelayed(new Runnable() {
             public void run() {
 

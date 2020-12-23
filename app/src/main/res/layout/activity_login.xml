@@ -18,23 +18,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="95dp"
+            android:layout_marginTop="155dp"
             android:layout_marginRight="30dp"
             android:orientation="vertical">
 
-            <TextView
+           <!-- <TextView
 
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
                 android:text="操作人ID:"
-                android:textSize="18sp" />
+                android:textSize="18sp" />-->
 
             <EditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="48sp"
+                android:hint="操作人ID"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_edittext"
                 android:paddingLeft="8dp"
@@ -49,9 +50,9 @@
             android:layout_height="44dp"
             android:layout_gravity="left"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="110dp"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
-            android:background="@drawable/btn0_ripple"
+            android:background="@drawable/shape_button"
             android:text="登  录"
             android:textColor="@color/white"
             android:textSize="24sp"

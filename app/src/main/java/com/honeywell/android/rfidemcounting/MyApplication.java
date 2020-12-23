@@ -22,11 +22,6 @@ public class MyApplication extends Application {
         rfidMgr = RfidManager.getInstance(this);
         user=new User();
 
-        File file =new File(Environment.getExternalStorageDirectory() +"/import");
-        if (!file.exists())
-        {
-            file.mkdir();
-        }
     }
 
     public static MyApplication getInstance() {

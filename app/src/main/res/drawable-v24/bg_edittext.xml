@@ -4,5 +4,5 @@
     <corners android:radius="6dip"/>
     <stroke
         android:width="2dip"
-        android:color="@color/blackTransparent3" />
+        android:color="@color/lfile_white" />
 </shape>

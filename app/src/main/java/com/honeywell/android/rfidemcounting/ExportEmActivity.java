@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -237,6 +238,7 @@ public class ExportEmActivity extends BaseActivity {
             super.onPostExecute(aVoid);
             loadingDialog.dismiss();
             eMlistAdapter.notifyDataSetChanged();
+            Toast.makeText(getApplicationContext(),"导出成功!",Toast.LENGTH_SHORT);
         }
     }
 
