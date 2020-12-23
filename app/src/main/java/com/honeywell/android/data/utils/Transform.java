@@ -19,7 +19,9 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import io.realm.Realm;
 import io.realm.RealmList;
 
 public class Transform {
@@ -116,59 +118,67 @@ public class Transform {
         return emList;
     }
 
-    public static boolean exportTxtfrom(String path, String taskName, EmBean em) throws IOException {
-        String filename = path + "/" + taskName + ".txt";
-        String temp = "";
+    public static boolean exportTxtfrom(String path, List<String> ids) throws IOException {
+        for (int j=0;j<ids.size();j++) {
+            Realm.init(Realm.getApplicationContext());
+            Realm realm = Realm.getDefaultInstance();
+            EmBean emBean = realm.where(EmBean.class).equalTo("id", ids.get(j)).findFirst();
 
-        FileInputStream fis = null;
-        InputStreamReader isr = null;
-        BufferedReader br = null;
+            String filename = path + "/" + emBean.getName() + ".txt";
+            String temp = "";
 
-        FileOutputStream fos = null;
-        PrintWriter pw = null;
-        try {
-            // 文件路径
-            File file = new File(filename);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            // 将文件读入输入流
-            fis = new FileInputStream(file);
-            isr = new InputStreamReader(fis);
-            br = new BufferedReader(isr);
-            StringBuffer buf = new StringBuffer();
-            buf = new StringBuffer("epcid state\n");
-            // 保存该文件原有的内容
-            for (int i = 0; i < em.getRfidList().size(); i++) {
-                buf = buf.append(em.getRfidList().get(i).getEpcid() + " " + em.getRfidList().get(i).getState() + "\n");
-            }
+            FileInputStream fis = null;
+            InputStreamReader isr = null;
+            BufferedReader br = null;
+
+            FileOutputStream fos = null;
+            PrintWriter pw = null;
+            try {
+                // 文件路径
+                File file = new File(filename);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                // 将文件读入输入流
+                fis = new FileInputStream(file);
+                isr = new InputStreamReader(fis);
+                br = new BufferedReader(isr);
+                StringBuffer buf = new StringBuffer();
+                buf = new StringBuffer("epcid state\n");
+                // 保存该文件原有的内容
+                for (int i = 0; i < emBean.getRfidList().size(); i++) {
+                    buf = buf.append(emBean.getRfidList().get(i).getEpcid() + " " + emBean.getRfidList().get(i).getState() + "\n");
+                }
 
 
-            fos = new FileOutputStream(file);
-            pw = new PrintWriter(fos);
-            pw.write(buf.toString().toCharArray());
-            pw.flush();
-        } catch (Exception e1) {
-            e1.printStackTrace();
-            return false;
-        } finally {
-            if (pw != null) {
-                pw.close();
-            }
-            if (fos != null) {
-                fos.close();
-            }
-            if (br != null) {
-                br.close();
-            }
-            if (isr != null) {
-                isr.close();
-            }
-            if (fis != null) {
-                fis.close();
+                fos = new FileOutputStream(file);
+                pw = new PrintWriter(fos);
+                pw.write(buf.toString().toCharArray());
+                pw.flush();
+                realm.beginTransaction();;
+                emBean.setState("已导出");
+                realm.commitTransaction();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                return false;
+            } finally {
+                if (pw != null) {
+                    pw.close();
+                }
+                if (fos != null) {
+                    fos.close();
+                }
+                if (br != null) {
+                    br.close();
+                }
+                if (isr != null) {
+                    isr.close();
+                }
+                if (fis != null) {
+                    fis.close();
+                }
             }
         }
-
         return true;
     }
 }

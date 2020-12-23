@@ -500,15 +500,15 @@ public class RFIDListActivity extends BaseActivity {
         @Override
         protected Void doInBackground(EmBean... emLists) {
             EmBean exportEm = emLists[0];
-            try {
-                boolean isexport = Transform.exportTxtfrom(filePath, exportEm.getName(), exportEm);
-                if (isexport) {
+           /* try {
+               // boolean isexport = Transform.exportTxtfrom(filePath, exportEm.getName(), exportEm.getId());
+                *//*if (isexport) {
                     Log.v(TAG, "export success");
-                }
+                }*//*
             } catch (IOException e) {
                 Log.v(TAG, "export failed");
                 e.printStackTrace();
-            }
+            }*/
             return null;
         }
 

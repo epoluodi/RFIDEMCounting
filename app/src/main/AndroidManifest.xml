@@ -56,6 +56,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:name=".ExportEmActivity">
         </activity>
+        <activity
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:name=".RFIDDetailsActivity">
+        </activity>
     </application>
 
 </manifest>

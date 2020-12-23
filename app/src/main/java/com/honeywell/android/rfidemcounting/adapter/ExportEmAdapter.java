@@ -26,11 +26,15 @@ public class ExportEmAdapter extends BaseQuickAdapter<EmBean, BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, EmBean item) {
         int i=helper.getLayoutPosition();
+        realm.beginTransaction();
+        item.setSelected(false);
+        realm.commitTransaction();
         helper.setText(R.id.index,String.valueOf(i+1))
                 .setText(R.id.name, item.getName())
                 .setText(R.id.state, String.valueOf(item.getState()));
        // Realm.getDefaultInstance().beginTransaction();
         CheckBox checkBox=(CheckBox)helper.getView(R.id.sel);
+        checkBox.setChecked(item.isSelected());
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

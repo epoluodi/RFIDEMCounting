@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,6 +47,7 @@ public class ExportEmActivity extends BaseActivity {
     private Realm realm;
     private String user_name;
     private String filePath;
+    private List<String> ids;
     User hyh;
     private List<EmBean> mList ;
     private ExportEmAdapter eMlistAdapter;
@@ -87,7 +89,7 @@ public class ExportEmActivity extends BaseActivity {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
-                    Intent intent = new Intent(ExportEmActivity.this, RFIDListActivity.class);
+                    Intent intent = new Intent(ExportEmActivity.this, RFIDDetailsActivity.class);
                     intent.putExtra("task",  mList.get(position).getId());
                     startActivity(intent);
                     CommonUtil.openNewActivityAnim(ExportEmActivity.this, false);
@@ -129,14 +131,19 @@ public class ExportEmActivity extends BaseActivity {
 
         });
         tv_right_title.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                try {
-                    boolean isexport=Transform.exportTxtfrom(filePath,mList.get(0).getName(),mList.get(0));
-                } catch (IOException e) {
-                    e.printStackTrace();
+                ids=new ArrayList<>();
+                for (int i=0;i<mList.size();i++) {
+                    if (mList.get(i).isSelected()) {
+                        ids.add(mList.get(i).getId());
+                    }
+
                 }
-                Log.v(TAG,String.valueOf(mList.get(0).isSelected()));
+                new ExportEmActivity.exportfile().execute(ids);
+              //  Log.v(TAG, String.valueOf(mList.get(0).isSelected()));
             }
         });
 
@@ -157,7 +164,7 @@ public class ExportEmActivity extends BaseActivity {
         hyh=new User();
         user_name=MyApplication.user.getUserName();
         hyh.setUserName(user_name);
-        mList=realm.where(EmBean.class).equalTo("username",user_name).equalTo("state","已完成").findAll().sort("time",Sort.ASCENDING);
+        mList=realm.where(EmBean.class).equalTo("username",user_name).equalTo("state","已完成").or().equalTo("state","已导出").findAll().sort("time",Sort.ASCENDING);
         eMlistAdapter.setNewData(mList);
         filePath = getApplication().getExternalCacheDir().getPath()+"/export";
     }
@@ -198,19 +205,21 @@ public class ExportEmActivity extends BaseActivity {
 
 
 
-    private class exportfile extends AsyncTask<EmBean, Void, Void> {
+    private class exportfile extends AsyncTask<List<String>, Void, Void> {
         @Override
-        protected Void doInBackground(EmBean... emLists) {
-            EmBean exportEm=realm.copyFromRealm(emLists[0]);
-            try {
-                boolean isexport=Transform.exportTxtfrom(filePath,emLists[0].getName(),exportEm);
-                if (isexport){
-                    Log.v(TAG,"export success");
+        protected Void doInBackground(List<String>... ids) {
+           // List<String> exportEm=emLists[0];
+         //   List<EmBean> embeans=new ArrayList<>();
+                try {
+                    boolean isexport = Transform.exportTxtfrom(filePath, ids[0]);
+                    if (isexport) {
+                        Log.v(TAG, "export success");
+                    }
+                } catch (IOException e) {
+                    Log.v(TAG, "export failed");
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                Log.v(TAG,"export failed");
-                e.printStackTrace();
-            }
+
             return null;
         }
 
@@ -227,6 +236,7 @@ public class ExportEmActivity extends BaseActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             loadingDialog.dismiss();
+            eMlistAdapter.notifyDataSetChanged();
         }
     }
 
