@@ -74,10 +74,18 @@ public class MainActivity extends BaseActivity {
         FunctionType functionType3=new FunctionType();
         functionType3.des="导出";
         functionType3.img=R.mipmap.p3;
+        FunctionType functionType4=new FunctionType();
+        functionType4.des="数据采集";
+        functionType4.img=R.mipmap.l1;
+        FunctionType functionType5=new FunctionType();
+        functionType5.des="关于";
+        functionType5.img=R.mipmap.l2;
         mList.add(functionType);
         mList.add(functionType2);
         mList.add(functionType3);
         mList.add(functionType1);
+        mList.add(functionType4);
+        mList.add(functionType5);
         mAdapter = new FunTypeAdapter(R.layout.item_iv_tv1,mList);
         mAdapter.addHeaderView(v);
         recyclerView.setAdapter(mAdapter);
@@ -191,10 +199,10 @@ public class MainActivity extends BaseActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            for (int i=0;i<pathList.size();i++){
+           /* for (int i=0;i<pathList.size();i++){
                 File file=new File(pathList.get(i));
                 file.delete();
-            }
+            }*/
             loadingDialog.dismiss();
             Intent intent = new Intent(MainActivity.this, EMListActivity.class);
             startActivity(intent);
