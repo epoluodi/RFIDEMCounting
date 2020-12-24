@@ -1,7 +1,9 @@
 package com.honeywell.android.rfidemcounting;
 
 import android.app.Application;
+import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 
 import com.honeywell.android.data.model.User;
 import com.honeywell.rfidservice.RfidManager;
@@ -21,6 +23,7 @@ public class MyApplication extends Application {
         mInstance = this;
         rfidMgr = RfidManager.getInstance(this);
         user=new User();
+        Log.e("Build.MODEL", Build.MODEL);
 
     }
 

@@ -55,7 +55,11 @@ public class aboutActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-        EzServiceManager.initService(this);
+
+        if (Build.MODEL.contains("EDA")) {
+            EzServiceManager.initService(this);
+        }
+
         mRfidMgr = MyApplication.getInstance().rfidMgr;
         mRfidMgr.setTriggerMode(TriggerMode.BARCODE_SCAN);
         //获取软件版本号，对应AndroidManifest.xml下android:versionCode
@@ -81,19 +85,39 @@ public class aboutActivity extends BaseActivity {
             editText = new EditText(aboutActivity.this);
             AlertDialog.Builder builder = new AlertDialog.Builder(aboutActivity.this);
             builder.setTitle("扫描授权二维码");
+
+            if (Build.MODEL.contains("EDA")) {
+                Log.e("sn", EzServiceManager.getSerialNumber());
+                builder.setMessage("本机SN："+ EzServiceManager.getSerialNumber());
+            } else if (Build.MODEL.contains("CT40")) {
+                if (Build.VERSION.SDK_INT < 27) {
+                    Log.e("sn", Build.SERIAL);
+                    builder.setMessage("本机SN：" + Build.SERIAL);
+                }
+            }
             builder.setView(editText);
             builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     String str = editText.getText().toString();
+                    str = str.toLowerCase();
                     if (str.equals("")) {
                         Toast.makeText(aboutActivity.this,
                                 "未知许可信息", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    String md5str = "";
 
-                    Log.e("sn", EzServiceManager.getSerialNumber());
-                    String md5str = md5(EzServiceManager.getSerialNumber() + "20201224");
+                    if (Build.MODEL.contains("EDA")) {
+                        Log.e("sn", EzServiceManager.getSerialNumber());
+                        md5str = md5(EzServiceManager.getSerialNumber() + "20201224");
+                    } else if (Build.MODEL.contains("CT40")) {
+                        if (Build.VERSION.SDK_INT < 27)
+                            Log.e("sn", Build.SERIAL);
+                            md5str = md5(Build.SERIAL + "20201224");
+                    }
+
+
                     Log.e("MD5", md5str);
                     if (md5str.equals(str)) {
                         Toast.makeText(aboutActivity.this,
@@ -104,6 +128,10 @@ public class aboutActivity extends BaseActivity {
                         editor.commit();
                         txtlcviense.setText("已授权");
                         btnscan.setVisibility(View.INVISIBLE);
+                    }else
+                    {
+                        Toast.makeText(aboutActivity.this,
+                                "未知许可信息", Toast.LENGTH_SHORT).show();
                     }
 
                 }

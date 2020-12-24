@@ -213,11 +213,13 @@ public class ExportEmActivity extends BaseActivity {
            // List<String> exportEm=emLists[0];
          //   List<EmBean> embeans=new ArrayList<>();
                 try {
+
                     boolean isexport = Transform.exportTxtfrom(filePath, ids[0]);
                     if (isexport) {
                         Log.v(TAG, "export success");
                     }
-                } catch (IOException e) {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
                     Log.v(TAG, "export failed");
                     e.printStackTrace();
                 }

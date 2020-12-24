@@ -62,6 +62,7 @@ public class BtActivity extends BaseActivity {
     private MyAdapter mAdapter;
     private List<BtDeviceInfo> mDevices = new ArrayList();
     private int mSelectedIdx = -1;
+    private List<String> btdevicename;
 
     @Override
     protected int attachLayoutRes() {
@@ -93,6 +94,7 @@ public class BtActivity extends BaseActivity {
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         requestPermissions();
+        btdevicename = new ArrayList<>();
     }
 
     @Override
@@ -186,7 +188,7 @@ public class BtActivity extends BaseActivity {
         mSelectedIdx = -1;
         mAdapter.notifyDataSetChanged();
 //        mBluetoothAdapter.startLeScan(mLeScanCallback);
-
+        btdevicename.clear();
         mBluetoothAdapter.startDiscovery();
 
         mWaitDialog = ProgressDialog.show(this, null, "正在扫描蓝牙设备...");
@@ -230,10 +232,14 @@ public class BtActivity extends BaseActivity {
                 Log.e("----", "Discovery Found " + mdevice.getName() +
                         " " + mdevice.getAddress());
 
+                if (btdevicename.contains(mdevice.getAddress()))
+                {
+                    return;
+                }
                 if (mdevice.getName() != null &&
                         (mdevice.getName().contains("IH25") )) {
                     mDevices.add(new BtDeviceInfo(mdevice,rssi));
-
+                    btdevicename.add(mdevice.getAddress());
 
                     runOnUiThread(new Runnable() {
                         @Override
