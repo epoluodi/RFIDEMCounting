@@ -5,10 +5,10 @@
         android:entryValues="@array/power_list"
         android:key="read_power_ante"
         android:title="天线读功率" />
-    <ListPreference
+<!--    <ListPreference-->
 
-        android:entries="@array/power_list"
-        android:entryValues="@array/power_list"
-        android:key="write_power_ante"
-        android:title="天线写功率" />
+<!--        android:entries="@array/power_list"-->
+<!--        android:entryValues="@array/power_list"-->
+<!--        android:key="write_power_ante"-->
+<!--        android:title="天线写功率" />-->
 </PreferenceScreen>
