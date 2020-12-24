@@ -46,7 +46,7 @@ dependencies {
     implementation 'org.greenrobot:greendao:3.3.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.leon:lfilepickerlibrary:1.8.0'
-    implementation(name: 'honeywell_rfid_sdk-release', ext: 'aar')
+    implementation(name: 'honeywell_rfid_sdk_v0.8', ext: 'aar')
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
     implementation 'com.dou361.dialogui:jjdxm-dialogui:1.0.3'
 

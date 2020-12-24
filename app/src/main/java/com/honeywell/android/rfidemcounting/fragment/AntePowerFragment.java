@@ -26,9 +26,9 @@ public class AntePowerFragment extends PreferenceFragmentCompat implements Prefe
     public void onCreatePreferences(Bundle bundle, String s) {
         addPreferencesFromResource(R.xml.ante_power_settings);
         mAnteReadPowerListPreference = (ListPreference) findPreference("read_power_ante");
-        mAnteWritePowerListPreference = (ListPreference) findPreference("write_power_ante");
+//        mAnteWritePowerListPreference = (ListPreference) findPreference("write_power_ante");
         mAnteReadPowerListPreference.setOnPreferenceChangeListener(this);
-        mAnteWritePowerListPreference.setOnPreferenceChangeListener(this);
+//        mAnteWritePowerListPreference.setOnPreferenceChangeListener(this);
     }
 
     //???正式代码中请删除，并赋予实际的函数调用
@@ -56,7 +56,7 @@ public class AntePowerFragment extends PreferenceFragmentCompat implements Prefe
         editor.commit();
 
         SettingParam.AnteReadPower = ap[0].getReadPower();
-        SettingParam.AnteWritePower = ap[0].getWritePower();
+//        SettingParam.AnteWritePower = ap[0].getWritePower();
 
         //???rfidMgr.setAntennaPower(ap);
     }
@@ -74,8 +74,8 @@ public class AntePowerFragment extends PreferenceFragmentCompat implements Prefe
                     if (i == 0) {
                         mAnteReadPowerListPreference.setValue(String.valueOf(ap[i].getReadPower()));
                         mAnteReadPowerListPreference.setSummary(String.valueOf(ap[i].getReadPower()/100) + "dBm");
-                        mAnteWritePowerListPreference.setValue(String.valueOf(ap[i].getWritePower()));
-                        mAnteWritePowerListPreference.setSummary(String.valueOf(ap[i].getWritePower()/100) + "dBm");
+//                        mAnteWritePowerListPreference.setValue(String.valueOf(ap[i].getWritePower()));
+//                        mAnteWritePowerListPreference.setSummary(String.valueOf(ap[i].getWritePower()/100) + "dBm");
                     }
                 }
 
@@ -122,24 +122,24 @@ public class AntePowerFragment extends PreferenceFragmentCompat implements Prefe
             }
         }
 
-        if (preference == mAnteWritePowerListPreference) {
-            String val = (String) newValue;
-            int antNum = 1;
-            AntennaPower[] ap = new AntennaPower[antNum];
-            if (checkIsRFIDReady()) {
-                try {
-                    for (int i = 0; i < antNum; i++) {
-                        ap[i] = new AntennaPower(i + 1, Integer.valueOf(mAnteReadPowerListPreference.getValue()) * 100, Integer.valueOf(val) * 100);
-                    }
-                    setAntennaPower(ap);
-                    mAnteWritePowerListPreference.setSummary(val + "dBm");
-                    Toast.makeText(getActivity(), "设置天线功率成功", Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    Toast.makeText(getActivity(), "设置天线功率失败" + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
+//        if (preference == mAnteWritePowerListPreference) {
+//            String val = (String) newValue;
+//            int antNum = 1;
+//            AntennaPower[] ap = new AntennaPower[antNum];
+//            if (checkIsRFIDReady()) {
+//                try {
+//                    for (int i = 0; i < antNum; i++) {
+//                        ap[i] = new AntennaPower(i + 1, Integer.valueOf(mAnteReadPowerListPreference.getValue()) * 100, Integer.valueOf(val) * 100);
+//                    }
+//                    setAntennaPower(ap);
+//                    mAnteWritePowerListPreference.setSummary(val + "dBm");
+//                    Toast.makeText(getActivity(), "设置天线功率成功", Toast.LENGTH_SHORT).show();
+//                } catch (Exception e) {
+//                    Toast.makeText(getActivity(), "设置天线功率失败" + e.getMessage(),
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        }
         return true;
     }
 }

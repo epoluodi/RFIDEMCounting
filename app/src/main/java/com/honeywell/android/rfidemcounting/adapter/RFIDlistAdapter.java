@@ -25,7 +25,7 @@ public class RFIDlistAdapter extends BaseQuickAdapter<RFIDList, BaseViewHolder> 
 
     @Override
     protected void convert(BaseViewHolder helper, RFIDList item) {
-        int i=helper.getLayoutPosition();
+        int i=helper.getAdapterPosition();
         helper.setText(R.id.index, String.valueOf(i+1))
                 .setText(R.id.epcid,item.getEpcid())
               /*  .setText(R.id.name, item.getIsCounted())*/
