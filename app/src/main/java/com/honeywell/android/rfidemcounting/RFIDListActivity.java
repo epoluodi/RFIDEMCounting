@@ -73,6 +73,9 @@ public class RFIDListActivity extends BaseActivity {
     TextView tv_unknown;
     private final static String ACTION_HONEYWLL = "com.honeywell";
     private String filePath;
+    private int precount=0;
+    private int unknown=0;
+    private int counted=0;
     private Realm realm;
     private Dialog loadingDialog;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -291,32 +294,14 @@ public class RFIDListActivity extends BaseActivity {
         rfiDlistAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-
-                /*AlertDialog.Builder builder = new AlertDialog.Builder(RFIDListActivity.this);
-                builder.setTitle(mList.get(position).getEpcid() + "处理");
-                final String[] cities = {"盘亏", "盘盈"};
-                builder.setItems(cities, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        realm.beginTransaction();
-                        mList.get(position).setState(cities[which]);
-                        realm.insertOrUpdate(mList.get(position));
-                        realm.commitTransaction();
-                        rfiDlistAdapter.notifyItemChanged(position);
-                    }
-                });*/
                 if (!mList.get(position).getState().equals("已盘")) {
                     String type;
-                    if (mList.get(position).getState().equals("未知")){
+                    if (mList.get(position).getState().equals("未知") ||mList.get(position).getState().equals("盘盈")){
                         type="盘盈";
                     }else {
                         type="盘亏";
                     }
                     final EditText inputServer = new EditText(RFIDListActivity.this);
-                   // inputServer.setWidth(60);
-                   // inputServer.setBackground(ContextCompat.getDrawable(getApplicationContext(),R.drawable.flat_btn_bg));
-                   // inputServer.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
                     AlertDialog.Builder builder = new AlertDialog.Builder(RFIDListActivity.this);
                     builder.setCancelable(false);//
                     builder.setTitle(type+"原因").setView(inputServer)
@@ -324,7 +309,7 @@ public class RFIDListActivity extends BaseActivity {
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             String reason = inputServer.getText().toString();
-                            Log.v(TAG,reason);
+                            //Log.v(TAG,reason);
                             realm.beginTransaction();
                             mList.get(position).setState(type);
                             mList.get(position).setEmname(MyApplication.user.getUserName());
@@ -334,6 +319,16 @@ public class RFIDListActivity extends BaseActivity {
                             realm.insertOrUpdate(mList.get(position));
                             realm.commitTransaction();
                             rfiDlistAdapter.notifyItemChanged(position);
+                            setTop();
+                          /*  if (mList.get(position).getState().equals("盘盈")){
+                                unknown--;
+                                counted++;
+                            }else {
+                                counted++;
+                            }
+                           // tv_all.setText("总条数:"+String.valueOf(precount));
+                            tv_count.setText("已盘:"+String.valueOf(counted));
+                            tv_unknown.setText("未知:"+String.valueOf(unknown));*/
                         }
                     });
                     builder.show();
@@ -373,19 +368,6 @@ public class RFIDListActivity extends BaseActivity {
 
                 normalDialog.show();
 
-//                // em.setState("已完成");
-//
-//                //  EmList em= realm.copyFromRealm(emList);
-//                //new RFIDListActivity.exportfile().execute(em);
-//                mRfidMgr.addEventListener(mEventListener);
-//                mRfidMgr.setDevicePower(true);
-//                mRfidMgr.setTriggerMode(TriggerMode.RFID);
-//                try {
-//                    Thread.sleep(500);//add this interval to avoid the poweroff op failed
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                mRfidMgr.connect(null);
             }
         });
 
@@ -432,13 +414,29 @@ public class RFIDListActivity extends BaseActivity {
         task = getIntent().getStringExtra("task");
         Realm.init(getApplicationContext());
         realm = Realm.getDefaultInstance();
-        // realm.setAutoRefresh(true);
         emList = realm.where(EmBean.class).equalTo("id", task).findFirst();
         em = realm.copyFromRealm(emList);
         mList = em.getRfidList();
+       setTop();
         rfiDlistAdapter.setNewData(mList);
     }
-
+    private void setTop(){
+        precount=0;
+        unknown=0;
+        counted=0;
+        for (int i=0;i<mList.size();i++){
+            precount++;
+            if (mList.get(i).getState().equals("已盘")||mList.get(i).getState().equals("盘盈")||mList.get(i).getState().equals("盘亏")){
+                counted++;
+            }else if (mList.get(i).getState().equals("未知")){
+                unknown++;
+            }
+        }
+        tv_all.setText("总条数:"+String.valueOf(precount));
+        tv_count.setText("已盘:"+String.valueOf(counted));
+        tv_unknown.setText("未知:"+String.valueOf(unknown));
+        rfiDlistAdapter.setNewData(mList);
+    }
     @Override
     public void initView() {
         super.initView();
@@ -486,9 +484,7 @@ public class RFIDListActivity extends BaseActivity {
         tv_right_title.setVisibility(View.VISIBLE);
         tv_right_title.setText("完成");
 
-        tv_all.setText("共3条");
-        tv_count.setText("已盘2条");
-        tv_unknown.setText("1条未知");
+
     }
 
     private EventListener mEventListener = new EventListener() {
@@ -589,6 +585,11 @@ public class RFIDListActivity extends BaseActivity {
                                 realm.insertOrUpdate(mList);
                                 realm.commitTransaction();
                                 rfiDlistAdapter.notifyItemChanged(i);
+                             /*  counted++;
+                                // tv_all.setText("总条数:"+String.valueOf(precount));
+                                tv_count.setText("已盘:"+String.valueOf(counted));
+                               // tv_unknown.setText("未知:"+String.valueOf(unknown));*/
+                                setTop();
                                 break;
                             }
                         }
@@ -602,10 +603,16 @@ public class RFIDListActivity extends BaseActivity {
                         rfidList.setEmname(MyApplication.user.getUserName());
                         rfidList.setEmtime(sdf.format(new Date()));
                         rfidList.setReason("未知");
-                      //  mList.add(rfidList);
-                        realm.insertOrUpdate(rfidList);
+                        mList.add(rfidList);
+                        realm.insertOrUpdate(mList);
                         realm.commitTransaction();
-                        rfiDlistAdapter.addData(rfidList);
+                        rfiDlistAdapter.notifyDataSetChanged();
+                       /* precount++;
+                        unknown++;
+                         tv_all.setText("总条数:"+String.valueOf(precount));
+                        //tv_count.setText("已盘:"+String.valueOf(counted));
+                         tv_unknown.setText("未知:"+String.valueOf(unknown));*/
+                        setTop();
                     }
                 }
             }

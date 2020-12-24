@@ -120,12 +120,13 @@ public class Transform {
     }
 
     public static boolean exportTxtfrom(String path, List<String> ids) throws IOException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (int j=0;j<ids.size();j++) {
             Realm.init(Realm.getApplicationContext());
             Realm realm = Realm.getDefaultInstance();
             EmBean emBean = realm.where(EmBean.class).equalTo("id", ids.get(j)).findFirst();
 
-            String filename = path + "/" + emBean.getName() + ".txt";
+            String filename = path + "/" + emBean.getName() +sdf.format(new Date())+ ".txt";
             String temp = "";
 
             FileInputStream fis = null;
