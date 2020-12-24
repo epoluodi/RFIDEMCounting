@@ -45,8 +45,6 @@ public class MainActivity extends BaseActivity {
     private String user_name;
     Dialog loadingDialog;
     private Realm realm;
-    User hyh;
-    private int imgs[] = {R.mipmap.l3,R.mipmap.l2,R.mipmap.l1,R.mipmap.l2};
     private ArrayList<FunctionType> mList = new ArrayList<>();
 
 
@@ -76,10 +74,10 @@ public class MainActivity extends BaseActivity {
         functionType3.img=R.mipmap.p3;
         FunctionType functionType4=new FunctionType();
         functionType4.des="数据采集";
-        functionType4.img=R.mipmap.l1;
+        functionType4.img=R.mipmap.p5;
         FunctionType functionType5=new FunctionType();
         functionType5.des="关于";
-        functionType5.img=R.mipmap.l2;
+        functionType5.img=R.mipmap.p6;
         mList.add(functionType);
         mList.add(functionType2);
         mList.add(functionType3);
@@ -128,6 +126,8 @@ public class MainActivity extends BaseActivity {
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
                         break;
                     case 3:
+
+
                         Intent intent1 = new Intent(MainActivity.this, SettingActivity.class);
                         startActivityForResult(intent1,1);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
@@ -144,6 +144,12 @@ public class MainActivity extends BaseActivity {
 
                         break;
                     case 2:
+                        if (!aboutActivity.checkLicense())
+                        {
+                            Toast.makeText(MainActivity.this,
+                                    "未授权，不可使用导出功能", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         Intent intent3 = new Intent(MainActivity.this, ExportEmActivity.class);
                         startActivity(intent3);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
@@ -151,6 +157,11 @@ public class MainActivity extends BaseActivity {
                     case 4:
                         Intent intent4 = new Intent(MainActivity.this, InitRFIDActivity.class);
                         startActivity(intent4);
+                        CommonUtil.openNewActivityAnim(MainActivity.this, false);
+                        break;
+                    case 5:
+                        Intent intent5 = new Intent(MainActivity.this, aboutActivity.class);
+                        startActivity(intent5);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
                         break;
                 }

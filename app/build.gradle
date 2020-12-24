@@ -49,6 +49,8 @@ dependencies {
     implementation(name: 'honeywell_rfid_sdk_v0.8', ext: 'aar')
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
     implementation 'com.dou361.dialogui:jjdxm-dialogui:1.0.3'
+    implementation(name: 'honeywellgenerateaar_v2.24', ext: 'aar')
+
 
 
 }

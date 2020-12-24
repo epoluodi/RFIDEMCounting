@@ -16,50 +16,38 @@
         android:roundIcon="@mipmap/ico"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".aboutActivity"></activity>
         <activity android:name=".LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".LoginActivity">
-        </activity>
-
+            android:name=".LoginActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".EMListActivity">
-        </activity>
-
+            android:name=".EMListActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".RFIDListActivity">
-        </activity>
-
+            android:name=".RFIDListActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".MainActivity">
-        </activity>
-
+            android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".SettingActivity">
-        </activity>
+            android:name=".SettingActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".BtActivity">
-        </activity>
+            android:name=".BtActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".ExportEmActivity">
-        </activity>
+            android:name=".ExportEmActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".RFIDDetailsActivity">
-        </activity>
+            android:name=".RFIDDetailsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:name=".InitRFIDActivity">
