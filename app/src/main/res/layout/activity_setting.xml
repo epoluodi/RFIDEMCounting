@@ -28,7 +28,7 @@
             android:layout_marginBottom="12dp"
 
             android:background="@drawable/shape_button"
-            android:text="蓝设备连接"
+            android:text="蓝牙设备连接"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />

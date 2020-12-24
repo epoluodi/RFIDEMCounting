@@ -47,7 +47,7 @@ public class RFIDDetailsActivity extends BaseActivity {
     private static final String TAG = "RFIDDetailsActivity";
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
-    private static List<RFIDList> mList;
+    private List<RFIDList> mList;
     private RFIDlistAdapter rfiDlistAdapter;
     private String task;
     private EmBean emList;
@@ -65,6 +65,11 @@ public class RFIDDetailsActivity extends BaseActivity {
     private final static String ACTION_HONEYWLL = "com.honeywell";
     private String filePath;
     private Realm realm;
+
+    private int precount = 0;
+    private int unknown = 0;
+    private int counted = 0;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -152,6 +157,23 @@ public class RFIDDetailsActivity extends BaseActivity {
         });
     }
 
+    private void setTop() {
+        precount = 0;
+        unknown = 0;
+        counted = 0;
+        for (int i = 0; i < mList.size(); i++) {
+            precount++;
+            if (mList.get(i).getState().equals("已盘") || mList.get(i).getState().equals("盘盈") || mList.get(i).getState().equals("盘亏")) {
+                counted++;
+            } else if (mList.get(i).getState().equals("未知")) {
+                unknown++;
+            }
+        }
+        tv_all.setText("总条数:" + String.valueOf(precount));
+        tv_count.setText("已盘:" + String.valueOf(counted));
+        tv_unknown.setText("未知:" + String.valueOf(unknown));
+        //  rfiDlistAdapter.addData(mList);
+    }
 
     @Override
     public void initData() {
@@ -162,6 +184,7 @@ public class RFIDDetailsActivity extends BaseActivity {
         em = realm.copyFromRealm(emList);
         mList = em.getRfidList();
         rfiDlistAdapter.setNewData(mList);
+        setTop();
     }
 
     @Override

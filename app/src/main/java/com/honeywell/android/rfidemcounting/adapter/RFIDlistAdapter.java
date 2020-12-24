@@ -1,10 +1,10 @@
 package com.honeywell.android.rfidemcounting.adapter;
 
 
-
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
@@ -25,17 +25,31 @@ public class RFIDlistAdapter extends BaseQuickAdapter<RFIDList, BaseViewHolder> 
 
     @Override
     protected void convert(BaseViewHolder helper, RFIDList item) {
-        int i=helper.getAdapterPosition();
-        helper.setText(R.id.index, String.valueOf(i+1))
-                .setText(R.id.epcid,item.getEpcid())
-              /*  .setText(R.id.name, item.getIsCounted())*/
+        int i = helper.getAdapterPosition();
+
+        helper.setText(R.id.index, String.valueOf(i + 1))
+                .setText(R.id.epcid, item.getEpcid())
+                /*  .setText(R.id.name, item.getIsCounted())*/
                 .setText(R.id.state, item.getState());
-                if (item.isIsem()){
-                    helper.itemView.findViewById(R.id.index).setBackground(ContextCompat.getDrawable(mContext,R.drawable.shape_blue));
-                }
+
+        if (item.isIsem()) {
+            Log.e("getItemId-position", String.valueOf(helper.getLayoutPosition()));
+            //Log.e("getItemId-position",String.valueOf(helper.getAdapterPosition()));
+
+            helper.itemView.findViewById(R.id.index).
+                    setBackground(ContextCompat.getDrawable(mContext,
+                    R.drawable.shape_blue));
+
+        }else {
+            helper.itemView.findViewById(R.id.index).
+                    setBackground(ContextCompat.getDrawable(mContext,
+                            R.drawable.shape_red));
+        }
 
     }
 
-
-
+    @Override
+    public void onBindViewHolder(BaseViewHolder holder, int positions) {
+        super.onBindViewHolder(holder, positions);
+    }
 }
