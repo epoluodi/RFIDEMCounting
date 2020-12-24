@@ -2,11 +2,20 @@ package com.honeywell.android.rfidemcounting;
 
 import android.os.Environment;
 import android.os.Handler;
+import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 
+import butterknife.BindView;
+
 
 public class LaunchActivity extends BaseActivity{
+
+    @BindView(R.id.txtver)
+    TextView txtver;
+
 
     @Override
     protected int attachLayoutRes() {
@@ -50,6 +59,16 @@ public class LaunchActivity extends BaseActivity{
             }
 
         }, 1000 * 2);
+    }
+
+    @Override
+    public void initView() {
+        super.initView();
+        try {
+            txtver.setText(getPackageManager().
+                    getPackageInfo(getPackageName(), 0).versionName);
+        }catch (Exception e)
+        {e.printStackTrace();}
     }
 
     @Override
