@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
 <TextView
+    android:id="@+id/txtver"
     android:layout_alignParentBottom="true"
     android:layout_marginBottom="8sp"
     android:gravity="center"
