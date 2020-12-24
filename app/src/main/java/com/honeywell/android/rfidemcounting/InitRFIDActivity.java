@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -21,13 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.dou361.dialogui.DialogUIUtils;
-import com.honeywell.android.data.utils.Transform;
 import com.honeywell.android.rfidemcounting.adapter.RFIDlistAdapter;
 import com.honeywell.android.rfidemcounting.bean.EmBean;
 import com.honeywell.android.rfidemcounting.bean.RFIDList;
@@ -42,9 +40,7 @@ import com.honeywell.rfidservice.rfid.TagAdditionData;
 import com.honeywell.rfidservice.rfid.TagReadData;
 import com.honeywell.rfidservice.rfid.TagReadOption;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +48,7 @@ import java.util.List;
 import butterknife.BindView;
 import io.realm.Realm;
 
-public class RFIDListActivity extends BaseActivity {
+public class InitRFIDActivity extends BaseActivity {
     private static final String TAG = "RFIDListActivity";
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
@@ -61,25 +57,17 @@ public class RFIDListActivity extends BaseActivity {
     private String task;
     private EmBean emList;
     private static EmBean em;
-    @BindView(R.id.tv_all)
-    TextView tv_all;
-    @BindView(R.id.tv_count)
-    TextView tv_count;
     private RfidManager mRfidMgr;
     private MyHandler mMyHandler;
     private MyApplication mMyApplication;
     private RfidReader mReader;
-    @BindView(R.id.tv_unknown)
-    TextView tv_unknown;
     private final static String ACTION_HONEYWLL = "com.honeywell";
     private String filePath;
-    private int precount=0;
-    private int unknown=0;
-    private int counted=0;
     private Realm realm;
     private Dialog loadingDialog;
+    private EmBean emBean;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+   /* private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         //  public static final String TAG = "MyBroadcastReceiver";
 
         public void onReceive(Context context, Intent intent) {
@@ -116,21 +104,21 @@ public class RFIDListActivity extends BaseActivity {
             }
         }
     };
-
+*/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRfidMgr = MyApplication.getInstance().rfidMgr;
         mReader = MyApplication.getInstance().mRfidReader;
 
-        filePath = getApplication().getExternalCacheDir().getPath() + "/export";
+        filePath = Environment.getExternalStorageDirectory()+ "/export";
         mMyHandler = new MyHandler(this);
 
 
         if (!mRfidMgr.isSerialDevice()) {
 
             if (!mRfidMgr.isConnected()) {
-                Toast.makeText(RFIDListActivity.this,
+                Toast.makeText(InitRFIDActivity.this,
                         "请进入设置，选择IH25设备进行连接", Toast.LENGTH_SHORT).show();
                 finish();
                 return;
@@ -150,7 +138,7 @@ public class RFIDListActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                loadingDialog = new ProgressDialog(RFIDListActivity.this);
+                                loadingDialog = new ProgressDialog(InitRFIDActivity.this);
                                 loadingDialog.setTitle("正在连接RFID读写器");
                                 loadingDialog.setCancelable(false);
                                 loadingDialog.show();
@@ -170,7 +158,7 @@ public class RFIDListActivity extends BaseActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(RFIDListActivity.this,
+                                    Toast.makeText(InitRFIDActivity.this,
                                             "RFID连接", Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -183,7 +171,7 @@ public class RFIDListActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(RFIDListActivity.this,
+                                Toast.makeText(InitRFIDActivity.this,
                                         "RFID连接失败", Toast.LENGTH_SHORT).show();
                                 loadingDialog.dismiss();
                             }
@@ -208,7 +196,7 @@ public class RFIDListActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            loadingDialog = new ProgressDialog(RFIDListActivity.this);
+                            loadingDialog = new ProgressDialog(InitRFIDActivity.this);
                             loadingDialog.setTitle("正在连接RFID读写器");
                             loadingDialog.setCancelable(false);
                             loadingDialog.show();
@@ -231,7 +219,7 @@ public class RFIDListActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(RFIDListActivity.this,
+                            Toast.makeText(InitRFIDActivity.this,
                                     "RFID连接", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -241,7 +229,7 @@ public class RFIDListActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(RFIDListActivity.this,
+                            Toast.makeText(InitRFIDActivity.this,
                                     "RFID连接失败", Toast.LENGTH_SHORT).show();
                             loadingDialog.dismiss();
                         }
@@ -259,7 +247,7 @@ public class RFIDListActivity extends BaseActivity {
     private static class MyHandler extends Handler {
         private WeakReference ref;
 
-        private MyHandler(RFIDListActivity act) {
+        private MyHandler(InitRFIDActivity act) {
             ref = new WeakReference<>(act);
         }
 
@@ -268,7 +256,7 @@ public class RFIDListActivity extends BaseActivity {
             super.handleMessage(msg);
 
             if (ref.get() != null) {
-                ((RFIDListActivity) ref.get()).handleMessage(msg);
+                ((InitRFIDActivity) ref.get()).handleMessage(msg);
             }
         }
     }
@@ -301,8 +289,8 @@ public class RFIDListActivity extends BaseActivity {
                     }else {
                         type="盘亏";
                     }
-                    final EditText inputServer = new EditText(RFIDListActivity.this);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RFIDListActivity.this);
+                    final EditText inputServer = new EditText(InitRFIDActivity.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(InitRFIDActivity.this);
                     builder.setCancelable(false);//
                     builder.setTitle(type+"原因").setView(inputServer)
                             .setNegativeButton("取消", null);
@@ -319,7 +307,6 @@ public class RFIDListActivity extends BaseActivity {
                             realm.insertOrUpdate(mList);
                             realm.commitTransaction();
                             rfiDlistAdapter.notifyItemChanged(position);
-                            setTop();
 
                           /*  if (mList.get(position).getState().equals("盘盈")){
                                 unknown--;
@@ -333,6 +320,7 @@ public class RFIDListActivity extends BaseActivity {
                         }
                     });
                     builder.show();
+
                 }
                 return false;
             }
@@ -342,7 +330,7 @@ public class RFIDListActivity extends BaseActivity {
         tv_right_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final androidx.appcompat.app.AlertDialog.Builder normalDialog = new androidx.appcompat.app.AlertDialog.Builder(RFIDListActivity.this);
+                final androidx.appcompat.app.AlertDialog.Builder normalDialog = new androidx.appcompat.app.AlertDialog.Builder(InitRFIDActivity.this);
                 normalDialog.setCancelable(false);
                 normalDialog.setTitle("完成");
                 normalDialog.setMessage("确认完成盘点任务吗？");
@@ -350,13 +338,7 @@ public class RFIDListActivity extends BaseActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                realm.beginTransaction();
-                                em.setState("已完成");
-                                realm.insertOrUpdate(em);
-                                realm.commitTransaction();
-                                Intent intent = new Intent(RFIDListActivity.this, ExportEmActivity.class);
-                                startActivity(intent);
-                                CommonUtil.openNewActivityAnim(RFIDListActivity.this, true);
+                                new InitRFIDActivity.exportfile().execute(emBean);
                             }
                         });
                 normalDialog.setNegativeButton("取消",
@@ -392,9 +374,9 @@ public class RFIDListActivity extends BaseActivity {
                 }
             }
             mList = null;
-            Intent intent = new Intent(RFIDListActivity.this, EMListActivity.class);
+            Intent intent = new Intent(InitRFIDActivity.this, EMListActivity.class);
             startActivity(intent);
-            CommonUtil.openNewActivityAnim(RFIDListActivity.this, true);
+            CommonUtil.openNewActivityAnim(InitRFIDActivity.this, true);
         }
     };
 
@@ -418,27 +400,11 @@ public class RFIDListActivity extends BaseActivity {
         emList = realm.where(EmBean.class).equalTo("id", task).findFirst();
         em = realm.copyFromRealm(emList);
         mList = em.getRfidList();
-       setTop();
+
         rfiDlistAdapter.addData(mList);
 
     }
-    private void setTop(){
-        precount=0;
-        unknown=0;
-        counted=0;
-        for (int i=0;i<mList.size();i++){
-            precount++;
-            if (mList.get(i).getState().equals("已盘")||mList.get(i).getState().equals("盘盈")||mList.get(i).getState().equals("盘亏")){
-                counted++;
-            }else if (mList.get(i).getState().equals("未知")){
-                unknown++;
-            }
-        }
-        tv_all.setText("总条数:"+String.valueOf(precount));
-        tv_count.setText("已盘:"+String.valueOf(counted));
-        tv_unknown.setText("未知:"+String.valueOf(unknown));
-      //  rfiDlistAdapter.addData(mList);
-    }
+
     @Override
     public void initView() {
         super.initView();
@@ -464,14 +430,14 @@ public class RFIDListActivity extends BaseActivity {
         super.onPause();
 
 
-        unregisterReceiver(broadcastReceiver);
+      //  unregisterReceiver(broadcastReceiver);
         mRfidMgr.removeEventListener(mEventListener);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(broadcastReceiver, new IntentFilter(ACTION_HONEYWLL));
+        //registerReceiver(broadcastReceiver, new IntentFilter(ACTION_HONEYWLL));
         mRfidMgr.addEventListener(mEventListener);
 
     }
@@ -480,12 +446,12 @@ public class RFIDListActivity extends BaseActivity {
     public void initTitle() {
         super.initTitle();
         tv_center_title.setVisibility(View.VISIBLE);
-        tv_center_title.setText("盘点明细列表");
+        tv_center_title.setText("初始化盘点数据列表");
 
         iv_back.setVisibility(View.VISIBLE);
 
         tv_right_title.setVisibility(View.VISIBLE);
-        tv_right_title.setText("完成");
+        tv_right_title.setText("导出");
 
 
     }
@@ -579,43 +545,20 @@ public class RFIDListActivity extends BaseActivity {
                     for (int i = 0; i < mList.size(); i++) {
                         if (mList.get(i).getEpcid().equals(epc)) {
                             isexists = true;
-                            if (mList.get(i).getState().equals("未盘")) {
-                                realm.beginTransaction();
-                                mList.get(i).setState("已盘");
-                                mList.get(i).setEmname(MyApplication.user.getUserName());
-                                mList.get(i).setEmtime(sdf.format(new Date()));
-                                mList.get(i).setIsem(true);
-                                realm.insertOrUpdate(mList);
-                                realm.commitTransaction();
-                                rfiDlistAdapter.notifyItemChanged(i);
-                             /*  counted++;
-                                // tv_all.setText("总条数:"+String.valueOf(precount));
-                                tv_count.setText("已盘:"+String.valueOf(counted));
-                               // tv_unknown.setText("未知:"+String.valueOf(unknown));*/
-                                setTop();
                                 break;
                             }
                         }
-                    }
                     if (!isexists) {
-                        realm.beginTransaction();
                         RFIDList rfidList = new RFIDList();
-                        rfidList.setState("未知");
+                        rfidList.setState("未盘");
                         rfidList.setEmlist(emList);
                         rfidList.setEpcid(epc);
                         rfidList.setEmname(MyApplication.user.getUserName());
                         rfidList.setEmtime(sdf.format(new Date()));
                         rfidList.setReason("未知");
                         mList.add(rfidList);
-                        realm.insertOrUpdate(mList);
-                        realm.commitTransaction();
                         rfiDlistAdapter.addData(rfidList);
-                       /* precount++;
-                        unknown++;
-                         tv_all.setText("总条数:"+String.valueOf(precount));
-                        //tv_count.setText("已盘:"+String.valueOf(counted));
-                         tv_unknown.setText("未知:"+String.valueOf(unknown));*/
-                        setTop();
+
                     }
                 }
             }
@@ -643,9 +586,9 @@ public class RFIDListActivity extends BaseActivity {
             mReader.release();
             mRfidMgr.disconnect();
         }
-        Intent intent = new Intent(RFIDListActivity.this, EMListActivity.class);
+        Intent intent = new Intent(InitRFIDActivity.this, EMListActivity.class);
         startActivity(intent);
-        CommonUtil.openNewActivityAnim(RFIDListActivity.this, true);
+        CommonUtil.openNewActivityAnim(InitRFIDActivity.this, true);
 
     }
 
@@ -653,22 +596,13 @@ public class RFIDListActivity extends BaseActivity {
         @Override
         protected Void doInBackground(EmBean... emLists) {
             EmBean exportEm = emLists[0];
-           /* try {
-               // boolean isexport = Transform.exportTxtfrom(filePath, exportEm.getName(), exportEm.getId());
-                *//*if (isexport) {
-                    Log.v(TAG, "export success");
-                }*//*
-            } catch (IOException e) {
-                Log.v(TAG, "export failed");
-                e.printStackTrace();
-            }*/
             return null;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loadingDialog = new ProgressDialog(RFIDListActivity.this);
+            loadingDialog = new ProgressDialog(InitRFIDActivity.this);
             loadingDialog.setTitle("正在导出文本");
             loadingDialog.setCancelable(false);
             loadingDialog.show();
