@@ -649,9 +649,9 @@ public class RFIDListActivity extends BaseActivity {
             mReader.release();
             mRfidMgr.disconnect();
         }
-        Intent intent = new Intent(RFIDListActivity.this, EMListActivity.class);
+       Intent intent = new Intent(RFIDListActivity.this, EMListActivity.class);
         startActivity(intent);
-        CommonUtil.openNewActivityAnim(RFIDListActivity.this, true);
+        CommonUtil.openNewActivityAnim(RFIDListActivity.this, false);
 
     }
 

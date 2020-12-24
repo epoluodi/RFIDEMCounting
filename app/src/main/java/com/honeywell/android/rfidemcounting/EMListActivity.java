@@ -87,7 +87,7 @@ public class EMListActivity extends BaseActivity {
                     Intent intent = new Intent(EMListActivity.this, RFIDListActivity.class);
                     intent.putExtra("task",  mList.get(position).getId());
                     startActivity(intent);
-                    CommonUtil.openNewActivityAnim(EMListActivity.this, false);
+                    CommonUtil.openNewActivityAnim(EMListActivity.this, true);
 
             }
         });
@@ -143,9 +143,8 @@ public class EMListActivity extends BaseActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EMListActivity.this, MainActivity.class);
-                startActivity(intent);
-                CommonUtil.openNewActivityAnim(EMListActivity.this, true);
+
+                CommonUtil.exitActivityAndBackAnim(EMListActivity.this, true);
             }
         });
 
@@ -203,9 +202,8 @@ public class EMListActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(EMListActivity.this, MainActivity.class);
-        startActivity(intent);
-        CommonUtil.openNewActivityAnim(EMListActivity.this, true);
+
+        CommonUtil.exitActivityAndBackAnim(EMListActivity.this, true);
     }
 
 

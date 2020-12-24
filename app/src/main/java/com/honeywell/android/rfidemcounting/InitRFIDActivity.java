@@ -55,7 +55,7 @@ public class InitRFIDActivity extends BaseActivity {
     private static final String TAG = "RFIDListActivity";
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
-    private static List<RFIDList> mList;
+    private  List<RFIDList> mList;
     private RFIDlistAdapter rfiDlistAdapter;
     private String task;
     private EmBean emList;
@@ -329,9 +329,8 @@ public class InitRFIDActivity extends BaseActivity {
                 }
             }
             mList = null;
-            Intent intent = new Intent(InitRFIDActivity.this, MainActivity.class);
-            startActivity(intent);
-            CommonUtil.openNewActivityAnim(InitRFIDActivity.this, true);
+
+            CommonUtil.exitActivityAndBackAnim(InitRFIDActivity.this, true);
         }
     };
 
@@ -564,9 +563,23 @@ public class InitRFIDActivity extends BaseActivity {
             super.onPostExecute(aVoid);
             loadingDialog.dismiss();
             Toast.makeText(getApplicationContext(),"导出完成",Toast.LENGTH_SHORT);
-            Intent intent = new Intent(InitRFIDActivity.this, MainActivity.class);
-            startActivity(intent);
-            CommonUtil.openNewActivityAnim(InitRFIDActivity.this, true);
+            if (mReader != null) {
+                if (!mRfidMgr.isSerialDevice()) {
+                    if (mRfidMgr.isConnected()){
+                        mReader.release();
+                        Log.e("RFID设备","IH25 释放");
+                    }
+
+
+                } else {
+                    mRfidMgr.disconnect();
+                    Log.e("RFID设备","读写器 释放");
+                }
+            }
+            mList = null;
+
+            CommonUtil.exitActivityAndBackAnim(InitRFIDActivity.this, true);
+
         }
     }
 

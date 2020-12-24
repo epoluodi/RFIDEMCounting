@@ -94,7 +94,7 @@ public class ExportEmActivity extends BaseActivity {
                     Intent intent = new Intent(ExportEmActivity.this, RFIDDetailsActivity.class);
                     intent.putExtra("task",  mList.get(position).getId());
                     startActivity(intent);
-                    CommonUtil.openNewActivityAnim(ExportEmActivity.this, false);
+                    CommonUtil.openNewActivityAnim(ExportEmActivity.this, true);
 
             }
         });
@@ -152,9 +152,8 @@ public class ExportEmActivity extends BaseActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ExportEmActivity.this, MainActivity.class);
-                startActivity(intent);
-                CommonUtil.openNewActivityAnim(ExportEmActivity.this, true);
+
+                CommonUtil.exitActivityAndBackAnim(ExportEmActivity.this, true);
             }
         });
     }
@@ -200,9 +199,8 @@ public class ExportEmActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(ExportEmActivity.this, MainActivity.class);
-        startActivity(intent);
-        CommonUtil.openNewActivityAnim(ExportEmActivity.this, true);
+
+        CommonUtil.exitActivityAndBackAnim(ExportEmActivity.this, true);
     }
 
 
