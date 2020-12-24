@@ -60,6 +60,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:name=".RFIDDetailsActivity">
         </activity>
+        <activity
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:name=".InitRFIDActivity">
+        </activity>
     </application>
 
 </manifest>

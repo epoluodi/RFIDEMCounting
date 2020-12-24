@@ -605,7 +605,7 @@ public class RFIDListActivity extends BaseActivity {
                         rfidList.setEpcid(epc);
                         rfidList.setEmname(MyApplication.user.getUserName());
                         rfidList.setEmtime(sdf.format(new Date()));
-                        rfidList.setReason("未知");
+                        rfidList.setReason("无");
                         mList.add(rfidList);
                         realm.insertOrUpdate(mList);
                         realm.commitTransaction();

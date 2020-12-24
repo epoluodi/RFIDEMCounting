@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.honeywell.android.data.utils.Transform;
 import com.honeywell.android.rfidemcounting.adapter.RFIDlistAdapter;
 import com.honeywell.android.rfidemcounting.bean.EmBean;
 import com.honeywell.android.rfidemcounting.bean.RFIDList;
@@ -40,8 +41,10 @@ import com.honeywell.rfidservice.rfid.TagAdditionData;
 import com.honeywell.rfidservice.rfid.TagReadData;
 import com.honeywell.rfidservice.rfid.TagReadOption;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -63,7 +66,6 @@ public class InitRFIDActivity extends BaseActivity {
     private RfidReader mReader;
     private final static String ACTION_HONEYWLL = "com.honeywell";
     private String filePath;
-    private Realm realm;
     private Dialog loadingDialog;
     private EmBean emBean;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -111,7 +113,7 @@ public class InitRFIDActivity extends BaseActivity {
         mRfidMgr = MyApplication.getInstance().rfidMgr;
         mReader = MyApplication.getInstance().mRfidReader;
 
-        filePath = Environment.getExternalStorageDirectory()+ "/export";
+        filePath = Environment.getExternalStorageDirectory()+ "/import";
         mMyHandler = new MyHandler(this);
 
 
@@ -241,7 +243,7 @@ public class InitRFIDActivity extends BaseActivity {
 
     @Override
     protected int attachLayoutRes() {
-        return R.layout.comment_list;
+        return R.layout.init_comment_list;
     }
 
     private static class MyHandler extends Handler {
@@ -279,53 +281,6 @@ public class InitRFIDActivity extends BaseActivity {
 
     @Override
     public void setListener() {
-        rfiDlistAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-                if (!mList.get(position).getState().equals("已盘")) {
-                    String type;
-                    if (mList.get(position).getState().equals("未知") ||mList.get(position).getState().equals("盘盈")){
-                        type="盘盈";
-                    }else {
-                        type="盘亏";
-                    }
-                    final EditText inputServer = new EditText(InitRFIDActivity.this);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(InitRFIDActivity.this);
-                    builder.setCancelable(false);//
-                    builder.setTitle(type+"原因").setView(inputServer)
-                            .setNegativeButton("取消", null);
-                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            String reason = inputServer.getText().toString();
-                            //Log.v(TAG,reason);
-                            realm.beginTransaction();
-                            mList.get(position).setState(type);
-                            mList.get(position).setEmname(MyApplication.user.getUserName());
-                            mList.get(position).setEmtime(sdf.format(new Date()));
-                            mList.get(position).setReason(reason);
-                            mList.get(position).setIsem(true);
-                            realm.insertOrUpdate(mList);
-                            realm.commitTransaction();
-                            rfiDlistAdapter.notifyItemChanged(position);
-
-                          /*  if (mList.get(position).getState().equals("盘盈")){
-                                unknown--;
-                                counted++;
-                            }else {
-                                counted++;
-                            }
-                           // tv_all.setText("总条数:"+String.valueOf(precount));
-                            tv_count.setText("已盘:"+String.valueOf(counted));
-                            tv_unknown.setText("未知:"+String.valueOf(unknown));*/
-                        }
-                    });
-                    builder.show();
-
-                }
-                return false;
-            }
-        });
-
 
         tv_right_title.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -333,12 +288,12 @@ public class InitRFIDActivity extends BaseActivity {
                 final androidx.appcompat.app.AlertDialog.Builder normalDialog = new androidx.appcompat.app.AlertDialog.Builder(InitRFIDActivity.this);
                 normalDialog.setCancelable(false);
                 normalDialog.setTitle("完成");
-                normalDialog.setMessage("确认完成盘点任务吗？");
+                normalDialog.setMessage("确认导出初始数据吗？");
                 normalDialog.setPositiveButton("确定",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                new InitRFIDActivity.exportfile().execute(emBean);
+                                new InitRFIDActivity.exportfile().execute();
                             }
                         });
                 normalDialog.setNegativeButton("取消",
@@ -374,7 +329,7 @@ public class InitRFIDActivity extends BaseActivity {
                 }
             }
             mList = null;
-            Intent intent = new Intent(InitRFIDActivity.this, EMListActivity.class);
+            Intent intent = new Intent(InitRFIDActivity.this, MainActivity.class);
             startActivity(intent);
             CommonUtil.openNewActivityAnim(InitRFIDActivity.this, true);
         }
@@ -394,14 +349,11 @@ public class InitRFIDActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        task = getIntent().getStringExtra("task");
-        Realm.init(getApplicationContext());
-        realm = Realm.getDefaultInstance();
-        emList = realm.where(EmBean.class).equalTo("id", task).findFirst();
-        em = realm.copyFromRealm(emList);
-        mList = em.getRfidList();
+        emBean=new EmBean();
+        emBean.setName("template"+sdf.format(new Date()));
 
-        rfiDlistAdapter.addData(mList);
+        mList = new ArrayList<>();
+       // rfiDlistAdapter.notifyDataSetChanged();
 
     }
 
@@ -550,15 +502,9 @@ public class InitRFIDActivity extends BaseActivity {
                         }
                     if (!isexists) {
                         RFIDList rfidList = new RFIDList();
-                        rfidList.setState("未盘");
-                        rfidList.setEmlist(emList);
                         rfidList.setEpcid(epc);
-                        rfidList.setEmname(MyApplication.user.getUserName());
-                        rfidList.setEmtime(sdf.format(new Date()));
-                        rfidList.setReason("未知");
                         mList.add(rfidList);
                         rfiDlistAdapter.addData(rfidList);
-
                     }
                 }
             }
@@ -592,10 +538,15 @@ public class InitRFIDActivity extends BaseActivity {
 
     }
 
-    private class exportfile extends AsyncTask<EmBean, Void, Void> {
+    private class exportfile extends AsyncTask<Void, Void, Void> {
         @Override
-        protected Void doInBackground(EmBean... emLists) {
-            EmBean exportEm = emLists[0];
+        protected Void doInBackground(Void...voids) {
+
+            try {
+               boolean transform= Transform.exportInitTxt(filePath,mList);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
@@ -612,6 +563,10 @@ public class InitRFIDActivity extends BaseActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             loadingDialog.dismiss();
+            Toast.makeText(getApplicationContext(),"导出完成",Toast.LENGTH_SHORT);
+            Intent intent = new Intent(InitRFIDActivity.this, MainActivity.class);
+            startActivity(intent);
+            CommonUtil.openNewActivityAnim(InitRFIDActivity.this, true);
         }
     }
 

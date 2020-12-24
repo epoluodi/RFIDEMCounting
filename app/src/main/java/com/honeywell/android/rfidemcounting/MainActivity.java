@@ -148,6 +148,11 @@ public class MainActivity extends BaseActivity {
                         startActivity(intent3);
                         CommonUtil.openNewActivityAnim(MainActivity.this, false);
                         break;
+                    case 4:
+                        Intent intent4 = new Intent(MainActivity.this, InitRFIDActivity.class);
+                        startActivity(intent4);
+                        CommonUtil.openNewActivityAnim(MainActivity.this, false);
+                        break;
                 }
             }
         });

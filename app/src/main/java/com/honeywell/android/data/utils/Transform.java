@@ -97,7 +97,7 @@ public class Transform {
                 Thread.sleep(10);
                 if(!line.startsWith("#")){
                     RFIDList rfid=new RFIDList();
-                    rfid.setReason("未盘");
+                    rfid.setReason("无");
                     rfid.setEmlist(emList);
                     rfid.setEpcid(line);
                     rfid.setState("未盘");
@@ -146,13 +146,13 @@ public class Transform {
                 isr = new InputStreamReader(fis);
                 br = new BufferedReader(isr);
                 StringBuffer buf = new StringBuffer();
-                buf = new StringBuffer("epcid state name reason time\n");
+                buf = new StringBuffer("epcid,state,name,reason,time\n");
                 // 保存该文件原有的内容
                 for (int i = 0; i < emBean.getRfidList().size(); i++) {
-                    buf = buf.append(emBean.getRfidList().get(i).getEpcid() + " "
-                            + emBean.getRfidList().get(i).getState() + " "+
-                                    emBean.getRfidList().get(i).getEmname() + " "+
-                                    emBean.getRfidList().get(i).getReason()+" "+
+                    buf = buf.append(emBean.getRfidList().get(i).getEpcid() + ","
+                            + emBean.getRfidList().get(i).getState() + ","+
+                                    emBean.getRfidList().get(i).getEmname() + ","+
+                                    emBean.getRfidList().get(i).getReason()+","+
                                     emBean.getRfidList().get(i).getEmtime()+"\n"
                             );
                 }
@@ -185,6 +185,65 @@ public class Transform {
                     fis.close();
                 }
             }
+        }
+        return true;
+    }
+
+    public static boolean exportInitTxt(String path,List<RFIDList> emBean) throws IOException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+            String filename = path + "/template"  +sdf.format(new Date())+ ".txt";
+            String temp = "";
+
+            FileInputStream fis = null;
+            InputStreamReader isr = null;
+            BufferedReader br = null;
+
+            FileOutputStream fos = null;
+            PrintWriter pw = null;
+            try {
+                // 文件路径
+                File file = new File(filename);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                // 将文件读入输入流
+                fis = new FileInputStream(file);
+                isr = new InputStreamReader(fis);
+                br = new BufferedReader(isr);
+                StringBuffer buf = new StringBuffer();
+                buf = new StringBuffer("#epcid\n");
+                // 保存该文件原有的内容
+                for (int i = 0; i < emBean.size(); i++) {
+                    buf = buf.append(emBean.get(i).getEpcid() +"\n"
+                    );
+                }
+
+
+                fos = new FileOutputStream(file);
+                pw = new PrintWriter(fos);
+                pw.write(buf.toString().toCharArray());
+                pw.flush();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                return false;
+            } finally {
+                if (pw != null) {
+                    pw.close();
+                }
+                if (fos != null) {
+                    fos.close();
+                }
+                if (br != null) {
+                    br.close();
+                }
+                if (isr != null) {
+                    isr.close();
+                }
+                if (fis != null) {
+                    fis.close();
+                }
         }
         return true;
     }
