@@ -43,7 +43,7 @@ public class AntePowerFragment extends PreferenceFragmentCompat implements Prefe
         ap[0] = new AntennaPower(1, sp.getInt("ReadPower", 3000),
                 sp.getInt("WritePower", 3000));
 
-        ap[0] = new AntennaPower(1, SettingParam.AnteReadPower, SettingParam.AnteWritePower);
+//        ap[0] = new AntennaPower(1, SettingParam.AnteReadPower, SettingParam.AnteWritePower);
 
         return ap;
     }
@@ -103,23 +103,20 @@ public class AntePowerFragment extends PreferenceFragmentCompat implements Prefe
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference == mAnteReadPowerListPreference) {
-            String val = (String) newValue;
-            int antNum = 1;
-            AntennaPower[] ap = new AntennaPower[antNum];
-            if (checkIsRFIDReady()) {
-                try {
-                    for (int i = 0; i < antNum; i++) {
-                        ap[i] = new AntennaPower(i + 1, Integer.valueOf(val) * 100, Integer.valueOf(mAnteWritePowerListPreference.getValue()) * 100);
-                    }
-                    setAntennaPower(ap);
-                    mAnteReadPowerListPreference.setSummary(val + "dBm");
-                    Toast.makeText(getActivity(), "设置天线功率成功", Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    Toast.makeText(getActivity(), "设置天线功率失败" + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
-                }
+        String val = (String) newValue;
+        int antNum = 1;
+        AntennaPower[] ap = new AntennaPower[antNum];
+
+        try {
+            for (int i = 0; i < antNum; i++) {
+                ap[i] = new AntennaPower(i + 1, Integer.valueOf(val) * 100, Integer.valueOf(val) * 100);
             }
+            setAntennaPower(ap);
+            mAnteReadPowerListPreference.setSummary(val + "dBm");
+            Toast.makeText(getActivity(), "设置天线功率成功", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "设置天线功率失败" + e.getMessage(),
+                    Toast.LENGTH_SHORT).show();
         }
 
 //        if (preference == mAnteWritePowerListPreference) {
